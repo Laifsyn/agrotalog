@@ -8,6 +8,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static proyFinalAgropecuaria.BDAgro;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace proyFinalAgropecuaria
 {
@@ -61,8 +63,15 @@ namespace proyFinalAgropecuaria
             {
                 // 3️⃣ Crear instancia de BDAgro y agregar el producto
                 BDAgro bd = new BDAgro();
-                bd.AgregarProducto(txtNombre.Text, txtDescripcion.Text, precio, stock, txtUnidad.Text);
 
+                if (!BDAgro.AddProduct.TryParse(txtNombre.Text, txtDescripcion.Text,
+                                 precio, stock, txtUnidad.Text, out AddProduct parseResult))
+                {
+                    throw new Exception("Error al crear el producto. Verifique los datos ingresados.");
+                }
+
+                bd.AgregarProducto(parseResult);
+                // bd.AgregarProducto(txtNombre.Text, txtDescripcion.Text, precio, stock, txtUnidad.Text);
                 MessageBox.Show("Producto agregado correctamente.");
 
                 // 4️⃣ Limpiar los campos

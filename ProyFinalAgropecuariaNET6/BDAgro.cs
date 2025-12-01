@@ -77,53 +77,47 @@ namespace proyFinalAgropecuaria
         }
 
         // TESTS
-        public static class UnidadMedidaExtensions
-        {
-            public static string ToText(this UnidadMedida unidad)
-            {
-                return unidad switch
-                {
-                    UnidadMedida.Unidad => "unidad",
-                    UnidadMedida.Kilo => "kilo",
-                    UnidadMedida.Litro => "litro",
-                    _ => "unidad"
-                };
-            }
-        }
-
-        // TESTS
         public struct AddProduct
         {
             public string nombre;
             public string descripcion;
             public double precio;
             public int stock; // IGNORAR
-            public UnidadMedida unidad; // IGNORAR
+            public string unidad; // IGNORAR
 
-            private AddProduct(string nombre, string descripcion,
-                       double precio, string unidad)
+            public static bool TryParse(string nombre, string descripcion,
+                                 double precio, int stock, string unidad, out AddProduct result)
             {
-                if (precio < 0)
-                    throw new ArgumentException("El precio no puede ser negativo.");
+                try
+                {
+                    if (precio < 0)
+                    {
+                        result = default;
+                        return false;
+                    } else if (stock < 0)
+                    {
+                        result = default;
+                        return false;
+                    };
 
-                this.nombre = nombre;
-                this.descripcion = descripcion;
-                this.precio = precio;
-
-                if (stock < 0)
-                    throw new ArgumentException("El stock debe ser mayor que 0");
-                this.stock = 0;
-                if (unidad.ToLower() == "unidad")
-                    this.unidad = UnidadMedida.Unidad;
-                else if (unidad.ToLower() == "litro")
-                    this.unidad = UnidadMedida.Litro;
-                else if (unidad.ToLower() == "kilo")
-                    this.unidad = UnidadMedida.Kilo;
-                else
-                    throw new ArgumentException("Unidad de medida no válida. Use 'unidad', 'kilo' o 'litro'.");
-
-                this.estado = 1;
+                    result = new AddProduct
+                    {
+                        nombre = nombre,
+                        descripcion = descripcion,
+                        precio = precio,
+                        stock = stock,
+                        unidad = unidad
+                    };
+                    return true;
+                }
+                catch (ArgumentException)
+                {
+                    result = default;
+                    return false;
+                }
             }
+
+
 
             public class AddProductException : Exception
             {
@@ -134,24 +128,8 @@ namespace proyFinalAgropecuaria
                 }
             }
 
-            public AddProductException? tryParse(string nombre, string descripcion,
-                                 double precio, string unidad, out AddProduct result)
-            {
-                try
-                {
-                    result = new AddProduct(nombre, descripcion, precio, unidad);
-                    return null;
-                }
-                catch (ArgumentException)
-                {
-                    result = default;
-                    return new AddProductException("Algo fallo", "Algun campo fallo");
-                }
-            }
-
-
             public void Deconstruct(out string nombre, out string descripcion,
-                                    out double precio, out int stock, out UnidadMedida unidad)
+                                    out double precio, out int stock, out string unidad)
             {
 
                 nombre = this.nombre;
@@ -173,7 +151,7 @@ namespace proyFinalAgropecuaria
                 ("$descripcion", descripcion),
                 ("$precio", precio),
                 ("$stock", stock),
-                ("$unidad", unidad.ToText()));
+                ("$unidad", unidad));
         }
 
         public bool EliminarProducto(int id)
