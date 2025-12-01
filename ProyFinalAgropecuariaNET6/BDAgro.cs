@@ -1,0 +1,323 @@
+﻿using Microsoft.Data.Sqlite;
+using SQLitePCL;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.IO;
+
+namespace proyFinalAgropecuaria
+{
+    internal class BDAgro
+    {
+        public readonly string connectionDB;
+
+        public BDAgro()
+        {
+            string dataFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Data");
+            Directory.CreateDirectory(dataFolder);
+
+            connectionDB = Path.Combine(dataFolder, "agro.db");
+
+            // Inicializar la base de datos y las tablas si no existen
+            CrearBDyTablas();
+        }
+
+        private void CrearBDyTablas()
+        {
+            using var conn = new SqliteConnection($"Data Source={connectionDB}");
+            conn.Open();
+            using var cmd = conn.CreateCommand();
+
+            // Tabla Productos
+            cmd.CommandText = @"
+                CREATE TABLE IF NOT EXISTS Productos (
+                    Id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    Nombre TEXT NOT NULL,
+                    Descripcion TEXT,
+                    Precio REAL,
+                    Stock INTEGER,
+                    Unidad TEXT
+                );";
+            cmd.ExecuteNonQuery();
+
+            // Tabla Clientes
+            cmd.CommandText = @"
+                CREATE TABLE IF NOT EXISTS Clientes (
+                    Id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    Nombre TEXT NOT NULL,
+                    Direccion TEXT,
+                    Telefono TEXT,
+                    Email TEXT,
+                    TipoCliente TEXT CHECK(TipoCliente IN ('Minorista','Mayorista'))
+                );";
+            cmd.ExecuteNonQuery();
+
+            // Tabla Proveedores
+            cmd.CommandText = @"
+                CREATE TABLE IF NOT EXISTS Proveedores (
+                    Id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    Nombre TEXT NOT NULL,
+                    Contacto TEXT,
+                    Telefono TEXT,
+                    Email TEXT,
+                    Direccion TEXT
+                );";
+            cmd.ExecuteNonQuery();
+
+            conn.Close();
+        }
+
+        // TESTS
+        public enum UnidadMedida
+        {
+            Unidad,
+            Kilo,
+            Litro,
+
+        }
+
+        // TESTS
+        public static class UnidadMedidaExtensions
+        {
+            public static string ToText(this UnidadMedida unidad)
+            {
+                return unidad switch
+                {
+                    UnidadMedida.Unidad => "unidad",
+                    UnidadMedida.Kilo => "kilo",
+                    UnidadMedida.Litro => "litro",
+                    _ => "unidad"
+                };
+            }
+        }
+
+        // TESTS
+        public struct AddProduct
+        {
+            public string nombre;
+            public string descripcion;
+            public double precio;
+            public int stock; // IGNORAR
+            public UnidadMedida unidad; // IGNORAR
+
+            private AddProduct(string nombre, string descripcion,
+                       double precio, string unidad)
+            {
+                if (precio < 0)
+                    throw new ArgumentException("El precio no puede ser negativo.");
+
+                this.nombre = nombre;
+                this.descripcion = descripcion;
+                this.precio = precio;
+
+                if (stock < 0)
+                    throw new ArgumentException("El stock debe ser mayor que 0");
+                this.stock = 0;
+                if (unidad.ToLower() == "unidad")
+                    this.unidad = UnidadMedida.Unidad;
+                else if (unidad.ToLower() == "litro")
+                    this.unidad = UnidadMedida.Litro;
+                else if (unidad.ToLower() == "kilo")
+                    this.unidad = UnidadMedida.Kilo;
+                else
+                    throw new ArgumentException("Unidad de medida no válida. Use 'unidad', 'kilo' o 'litro'.");
+
+                this.estado = 1;
+            }
+
+            public class AddProductException : Exception
+            {
+                public string failingField;
+                public AddProductException(string message, string fieldName) : base(message)
+                {
+                    failingField = fieldName;
+                }
+            }
+
+            public AddProductException? tryParse(string nombre, string descripcion,
+                                 double precio, string unidad, out AddProduct result)
+            {
+                try
+                {
+                    result = new AddProduct(nombre, descripcion, precio, unidad);
+                    return null;
+                }
+                catch (ArgumentException)
+                {
+                    result = default;
+                    return new AddProductException("Algo fallo", "Algun campo fallo");
+                }
+            }
+
+
+            public void Deconstruct(out string nombre, out string descripcion,
+                                    out double precio, out int stock, out UnidadMedida unidad)
+            {
+
+                nombre = this.nombre;
+                descripcion = this.descripcion;
+                precio = this.precio;
+                stock = this.stock;
+                unidad = this.unidad;
+            }
+        }
+
+        public void AgregarProducto(AddProduct product_to_add)
+        {
+
+            // Destructure the struct
+            var (nombre, descripcion, precio, stock, unidad) = product_to_add;
+            string sql = "INSERT INTO Productos (Nombre, Descripcion, Precio, Stock, Unidad) VALUES ($nombre,$descripcion,$precio,$stock,$unidad)";
+            EjecutarComando(sql,
+                ("$nombre", nombre),
+                ("$descripcion", descripcion),
+                ("$precio", precio),
+                ("$stock", stock),
+                ("$unidad", unidad.ToText()));
+        }
+
+        public bool EliminarProducto(int id)
+        {
+            string sql = "DELETE FROM Productos WHERE Id=$id";
+            return EjecutarComandoConResultado(sql, ("$id", id));
+        }
+
+        public DataTable MostrarProductos()
+        {
+            string sql = "SELECT * FROM Productos";
+            return EjecutarConsulta(sql);
+        }
+
+        // =================== CLIENTES ===================
+        public void AgregarCliente(string nombre, string direccion, string telefono, string email, string tipoCliente)
+        {
+            string sql = "INSERT INTO Clientes (Nombre, Direccion, Telefono, Email, TipoCliente) VALUES ($nombre,$direccion,$telefono,$email,$tipoCliente)";
+            EjecutarComando(sql,
+                ("$nombre", nombre),
+                ("$direccion", direccion),
+                ("$telefono", telefono),
+                ("$email", email),
+                ("$tipoCliente", tipoCliente));
+        }
+
+        public DataTable MostrarClientes()
+        {
+            string sql = "SELECT * FROM Clientes";
+            return EjecutarConsulta(sql);
+        }
+
+        public bool ActualizarCliente(int id, string nombre, string direccion, string telefono, string email, string tipoCliente)
+        {
+            string sql = @"
+                UPDATE Clientes
+                SET Nombre=$nombre, Direccion=$direccion, Telefono=$telefono, Email=$email, TipoCliente=$tipoCliente
+                WHERE Id=$id";
+            return EjecutarComandoConResultado(sql,
+                ("$nombre", nombre),
+                ("$direccion", direccion),
+                ("$telefono", telefono),
+                ("$email", email),
+                ("$tipoCliente", tipoCliente),
+                ("$id", id));
+        }
+
+        public bool EliminarCliente(int id)
+        {
+            string sql = "DELETE FROM Clientes WHERE Id=$id";
+            return EjecutarComandoConResultado(sql, ("$id", id));
+        }
+
+        // =================== PROVEEDORES ===================
+        public void AgregarProveedor(string nombre, string contacto, string telefono, string email, string direccion)
+        {
+            string sql = "INSERT INTO Proveedores (Nombre, Contacto, Telefono, Email, Direccion) VALUES ($nombre,$contacto,$telefono,$email,$direccion)";
+            EjecutarComando(sql,
+                ("$nombre", nombre),
+                ("$contacto", contacto),
+                ("$telefono", telefono),
+                ("$email", email),
+                ("$direccion", direccion));
+        }
+
+        public DataTable MostrarProveedores()
+        {
+            string sql = "SELECT * FROM Proveedores";
+            return EjecutarConsulta(sql);
+        }
+
+        public bool ActualizarProveedor(int id, string nombre, string contacto, string telefono, string email, string direccion)
+        {
+            string sql = @"
+                UPDATE Proveedores
+                SET Nombre=$nombre, Contacto=$contacto, Telefono=$telefono, Email=$email, Direccion=$direccion
+                WHERE Id=$id";
+            return EjecutarComandoConResultado(sql,
+                ("$nombre", nombre),
+                ("$contacto", contacto),
+                ("$telefono", telefono),
+                ("$email", email),
+                ("$direccion", direccion),
+                ("$id", id));
+        }
+
+        public bool EliminarProveedor(int id)
+        {
+            string sql = "DELETE FROM Proveedores WHERE Id=$id";
+            return EjecutarComandoConResultado(sql, ("$id", id));
+        }
+
+        // =================== MÉTODOS GENERALES ===================
+        private void EjecutarComando(string sql, params (string, object)[] parametros)
+        {
+            using var conn = new SqliteConnection($"Data Source={connectionDB}");
+            conn.Open();
+
+            using var cmd = conn.CreateCommand();
+            cmd.CommandText = sql;
+
+            foreach (var (nombre, valor) in parametros)
+            {
+                cmd.Parameters.AddWithValue(nombre, valor);
+            }
+
+            cmd.ExecuteNonQuery();
+            conn.Close();
+        }
+
+        private bool EjecutarComandoConResultado(string sql, params (string, object)[] parametros)
+        {
+            using var conn = new SqliteConnection($"Data Source={connectionDB}");
+            conn.Open();
+
+            using var cmd = conn.CreateCommand();
+            cmd.CommandText = sql;
+
+            foreach (var (nombre, valor) in parametros)
+            {
+                cmd.Parameters.AddWithValue(nombre, valor);
+            }
+
+            int filasAfectadas = cmd.ExecuteNonQuery();
+            conn.Close();
+
+            return filasAfectadas > 0; // true si afectó filas, false si no
+        }
+
+        private DataTable EjecutarConsulta(string sql)
+        {
+            using var conn = new SqliteConnection($"Data Source={connectionDB}");
+            conn.Open();
+
+            using var cmd = conn.CreateCommand();
+            cmd.CommandText = sql;
+
+            using var reader = cmd.ExecuteReader();
+            var dt = new DataTable();
+            dt.Load(reader);
+
+            conn.Close();
+            return dt;
+        }
+
+    }
+}
