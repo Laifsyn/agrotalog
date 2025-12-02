@@ -21,119 +21,120 @@
 
         private void InitializeComponent()
         {
-            this.txtId = new System.Windows.Forms.TextBox();
-            this.txtNombre = new System.Windows.Forms.TextBox();
-            this.txtDescripcion = new System.Windows.Forms.TextBox();
-            this.txtPrecio = new System.Windows.Forms.TextBox();
-            this.txtStock = new System.Windows.Forms.TextBox();
-            this.txtUnidad = new System.Windows.Forms.TextBox();
-            this.btnNuevo = new System.Windows.Forms.Button();
-            this.btnGuardar = new System.Windows.Forms.Button();
-            this.btnEliminar = new System.Windows.Forms.Button();
-            this.dgvProductos = new System.Windows.Forms.DataGridView();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvProductos)).BeginInit();
-            this.SuspendLayout();
+            txtId = new TextBox();
+            txtNombre = new TextBox();
+            txtDescripcion = new TextBox();
+            txtPrecio = new TextBox();
+            txtStock = new TextBox();
+            txtUnidad = new TextBox();
+            btnNuevo = new Button();
+            btnGuardar = new Button();
+            btnEliminar = new Button();
+            dgvProductos = new DataGridView();
+            ((System.ComponentModel.ISupportInitialize)dgvProductos).BeginInit();
+            SuspendLayout();
             // 
             // txtId
             // 
-            this.txtId.Location = new System.Drawing.Point(580, 12);
-            this.txtId.Name = "txtId";
-            this.txtId.ReadOnly = true;
-            this.txtId.Size = new System.Drawing.Size(100, 22);
-            this.txtId.TabIndex = 1;
+            txtId.Location = new Point(580, 12);
+            txtId.Name = "txtId";
+            txtId.ReadOnly = true;
+            txtId.Size = new Size(100, 23);
+            txtId.TabIndex = 1;
             // 
             // txtNombre
             // 
-            this.txtNombre.Location = new System.Drawing.Point(580, 42);
-            this.txtNombre.Name = "txtNombre";
-            this.txtNombre.Size = new System.Drawing.Size(220, 22);
-            this.txtNombre.TabIndex = 2;
+            txtNombre.Location = new Point(580, 42);
+            txtNombre.Name = "txtNombre";
+            txtNombre.Size = new Size(220, 23);
+            txtNombre.TabIndex = 2;
             // 
             // txtDescripcion
             // 
-            this.txtDescripcion.Location = new System.Drawing.Point(580, 70);
-            this.txtDescripcion.Name = "txtDescripcion";
-            this.txtDescripcion.Size = new System.Drawing.Size(220, 22);
-            this.txtDescripcion.TabIndex = 3;
+            txtDescripcion.Location = new Point(580, 70);
+            txtDescripcion.Name = "txtDescripcion";
+            txtDescripcion.Size = new Size(220, 23);
+            txtDescripcion.TabIndex = 3;
             // 
             // txtPrecio
             // 
-            this.txtPrecio.Location = new System.Drawing.Point(580, 98);
-            this.txtPrecio.Name = "txtPrecio";
-            this.txtPrecio.Size = new System.Drawing.Size(100, 22);
-            this.txtPrecio.TabIndex = 4;
+            txtPrecio.Location = new Point(580, 98);
+            txtPrecio.Name = "txtPrecio";
+            txtPrecio.Size = new Size(100, 23);
+            txtPrecio.TabIndex = 4;
             // 
             // txtStock
             // 
-            this.txtStock.Location = new System.Drawing.Point(580, 126);
-            this.txtStock.Name = "txtStock";
-            this.txtStock.Size = new System.Drawing.Size(100, 22);
-            this.txtStock.TabIndex = 5;
+            txtStock.Location = new Point(580, 126);
+            txtStock.Name = "txtStock";
+            txtStock.Size = new Size(100, 23);
+            txtStock.TabIndex = 5;
             // 
             // txtUnidad
             // 
-            this.txtUnidad.Location = new System.Drawing.Point(580, 154);
-            this.txtUnidad.Name = "txtUnidad";
-            this.txtUnidad.Size = new System.Drawing.Size(100, 22);
-            this.txtUnidad.TabIndex = 6;
+            txtUnidad.Location = new Point(580, 154);
+            txtUnidad.Name = "txtUnidad";
+            txtUnidad.Size = new Size(100, 23);
+            txtUnidad.TabIndex = 6;
             // 
             // btnNuevo
             // 
-            this.btnNuevo.Location = new System.Drawing.Point(580, 190);
-            this.btnNuevo.Name = "btnNuevo";
-            this.btnNuevo.Size = new System.Drawing.Size(75, 30);
-            this.btnNuevo.TabIndex = 7;
-            this.btnNuevo.Text = "Nuevo";
-            this.btnNuevo.Click += new System.EventHandler(this.btnNuevo_Click);
+            btnNuevo.Location = new Point(580, 190);
+            btnNuevo.Name = "btnNuevo";
+            btnNuevo.Size = new Size(75, 30);
+            btnNuevo.TabIndex = 7;
+            btnNuevo.Text = "Nuevo";
+            btnNuevo.Click += btnNuevo_Click;
             // 
             // btnGuardar
             // 
-            this.btnGuardar.Location = new System.Drawing.Point(665, 190);
-            this.btnGuardar.Name = "btnGuardar";
-            this.btnGuardar.Size = new System.Drawing.Size(75, 30);
-            this.btnGuardar.TabIndex = 8;
-            this.btnGuardar.Text = "Guardar";
-            this.btnGuardar.Click += new System.EventHandler(this.btnGuardar_Click);
+            btnGuardar.Location = new Point(665, 190);
+            btnGuardar.Name = "btnGuardar";
+            btnGuardar.Size = new Size(75, 30);
+            btnGuardar.TabIndex = 8;
+            btnGuardar.Text = "Guardar";
+            btnGuardar.Click += btnGuardar_Click;
             // 
             // btnEliminar
             // 
-            this.btnEliminar.Location = new System.Drawing.Point(750, 190);
-            this.btnEliminar.Name = "btnEliminar";
-            this.btnEliminar.Size = new System.Drawing.Size(75, 30);
-            this.btnEliminar.TabIndex = 9;
-            this.btnEliminar.Text = "Eliminar";
-            this.btnEliminar.Click += new System.EventHandler(this.btnEliminar_Click);
+            btnEliminar.Location = new Point(750, 190);
+            btnEliminar.Name = "btnEliminar";
+            btnEliminar.Size = new Size(75, 30);
+            btnEliminar.TabIndex = 9;
+            btnEliminar.Text = "Eliminar";
+            btnEliminar.Click += btnEliminar_Click;
             // 
             // dgvProductos
             // 
-         
-            this.dgvProductos.ColumnHeadersHeight = 29;
-            this.dgvProductos.Location = new System.Drawing.Point(12, 12);
-            this.dgvProductos.MultiSelect = false;
-            this.dgvProductos.Name = "dgvProductos";
-            this.dgvProductos.RowHeadersWidth = 51;
-            this.dgvProductos.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvProductos.Size = new System.Drawing.Size(550, 300);
-            this.dgvProductos.TabIndex = 0;
+            dgvProductos.ColumnHeadersHeight = 29;
+            dgvProductos.Location = new Point(12, 12);
+            dgvProductos.MultiSelect = false;
+            dgvProductos.Name = "dgvProductos";
+            dgvProductos.RowHeadersWidth = 51;
+            dgvProductos.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            dgvProductos.Size = new Size(550, 300);
+            dgvProductos.TabIndex = 0;
+            dgvProductos.CellClick += dgvProductos_CellClick;
             // 
             // frmProductos
             // 
-            this.ClientSize = new System.Drawing.Size(840, 330);
-            this.Controls.Add(this.dgvProductos);
-            this.Controls.Add(this.txtId);
-            this.Controls.Add(this.txtNombre);
-            this.Controls.Add(this.txtDescripcion);
-            this.Controls.Add(this.txtPrecio);
-            this.Controls.Add(this.txtStock);
-            this.Controls.Add(this.txtUnidad);
-            this.Controls.Add(this.btnNuevo);
-            this.Controls.Add(this.btnGuardar);
-            this.Controls.Add(this.btnEliminar);
-            this.Name = "frmProductos";
-            this.Text = "Productos";
-            ((System.ComponentModel.ISupportInitialize)(this.dgvProductos)).EndInit();
-            this.ResumeLayout(false);
-            this.PerformLayout();
+            ClientSize = new Size(840, 330);
+            Controls.Add(dgvProductos);
+            Controls.Add(txtId);
+            Controls.Add(txtNombre);
+            Controls.Add(txtDescripcion);
+            Controls.Add(txtPrecio);
+            Controls.Add(txtStock);
+            Controls.Add(txtUnidad);
+            Controls.Add(btnNuevo);
+            Controls.Add(btnGuardar);
+            Controls.Add(btnEliminar);
+            Name = "frmProductos";
+            Text = "Productos";
+            Load += frmProductos_Load;
+            ((System.ComponentModel.ISupportInitialize)dgvProductos).EndInit();
+            ResumeLayout(false);
+            PerformLayout();
 
         }
 

@@ -1,15 +1,5 @@
-﻿using Microsoft.Data.Sqlite;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿using DotNext;
 using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using static proyFinalAgropecuaria.BDAgro;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace proyFinalAgropecuaria
 {
@@ -20,6 +10,84 @@ namespace proyFinalAgropecuaria
             InitializeComponent();
         }
 
+        /// <summary>
+        /// Errors related to Product instantiation
+        public enum ProductError
+        {
+            Success,
+            BlankName = 1,
+            NegativePrice,
+        }
+
+        public struct Productos
+        {
+            public string Nombre;
+            public string Descripcion;
+            public double Precio;
+            public int Stock;
+            public string Unidad;
+
+            public static Result<Productos, ProductError> New(string nombre, string descripcion, double precio, int stock, string unidad)
+            {
+                if (precio < 0.0)
+                {
+                    return new(ProductError.NegativePrice);
+                }
+
+                if (string.IsNullOrWhiteSpace(nombre))
+                {
+                    return new(ProductError.BlankName);
+                }
+
+                var producto = new Productos
+                {
+                    Nombre = nombre,
+                    Descripcion = descripcion,
+                    Precio = precio,
+                    Stock = stock,
+                    Unidad = unidad
+                };
+                return producto;
+            }
+
+            public void Deconstruct(out string nombre, out string descripcion,
+                                    out double precio, out int stock, out string unidad)
+            {
+
+                nombre = this.Nombre;
+                descripcion = this.Descripcion;
+                precio = this.Precio;
+                stock = this.Stock;
+                unidad = this.Unidad;
+            }
+
+        }
+
+        // 2️⃣ Método para agregar producto
+        public void AgregarProducto(Productos product_to_add)
+        {
+
+            // Destructure the struct
+            var (nombre, descripcion, precio, stock, unidad) = product_to_add;
+            string sql = "INSERT INTO Productos (Nombre, Descripcion, Precio, Stock, Unidad) VALUES ($nombre,$descripcion,$precio,$stock,$unidad)";
+            BDAgro bd = new BDAgro();
+            bd.EjecutarComando(sql,
+                ("$nombre", nombre),
+                ("$descripcion", descripcion),
+                ("$precio", precio),
+                ("$stock", stock),
+                ("$unidad", unidad));
+        }
+
+        public void CargarProductos()
+        {
+            string sql = "SELECT * FROM Productos";
+            BDAgro bd = new BDAgro();
+            DataTable dt = bd.EjecutarConsulta(sql);
+            dgvProductos.DataSource = dt;
+        }
+
+        // 4️⃣ Nuevo producto
         private void btnNuevo_Click(object sender, EventArgs e)
         {
             // Lógica que implementará tu compañero
@@ -29,50 +97,56 @@ namespace proyFinalAgropecuaria
             txtPrecio.Clear();
             txtStock.Clear();
             txtUnidad.Clear();
-
         }
 
+        // 3️⃣ Guardar el producto
         private void btnGuardar_Click(object sender, EventArgs e)
         {
-            // Lógica que implementará tu compañero
-            // 1️⃣ Validar que los campos no estén vacíos
-            if (string.IsNullOrWhiteSpace(txtNombre.Text) ||
-                string.IsNullOrWhiteSpace(txtDescripcion.Text) ||
-                string.IsNullOrWhiteSpace(txtPrecio.Text) ||
-                string.IsNullOrWhiteSpace(txtStock.Text) ||
-                string.IsNullOrWhiteSpace(txtUnidad.Text))
+            //if (string.IsNullOrWhiteSpace(txtNombre.Text) ||
+            //    string.IsNullOrWhiteSpace(txtDescripcion.Text) ||
+            //    string.IsNullOrWhiteSpace(txtPrecio.Text) ||
+            //    string.IsNullOrWhiteSpace(txtStock.Text) ||
+            //    string.IsNullOrWhiteSpace(txtUnidad.Text))
+            //{
+            //    MessageBox.Show("Por favor, complete todos los campos", "Error",
+            //                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            //    return;
+            //}
+
+
+            Result<Productos, ProductError> productResult = Productos.New(
+                txtNombre.Text,
+                txtDescripcion.Text,
+                double.Parse(txtPrecio.Text),
+                int.Parse(txtStock.Text),
+                txtUnidad.Text
+                );
+
+            if (productResult.TryGet(out Productos producto) is false)
             {
-                MessageBox.Show("Por favor, complete todos los campos.");
+                switch (productResult.Error!)
+                {
+                    case ProductError.NegativePrice:
+                        MessageBox.Show("El precio no puede ser negativo.", "Error",
+                                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        break;
+                    case ProductError.BlankName:
+                        MessageBox.Show("El nombre no puede estar vacío.", "Error",
+                                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        break;
+                }
                 return;
             }
 
-            // 2️⃣ Validar que Precio y Stock sean números válidos
-            if (!double.TryParse(txtPrecio.Text, out double precio))
-            {
-                MessageBox.Show("Ingrese un precio válido.");
-                return;
-            }
-
-            if (!int.TryParse(txtStock.Text, out int stock))
-            {
-                MessageBox.Show("Ingrese un stock válido.");
-                return;
-            }
 
             try
             {
-                // 3️⃣ Crear instancia de BDAgro y agregar el producto
-                BDAgro bd = new BDAgro();
+                AgregarProducto(producto);
 
-                if (!BDAgro.AddProduct.TryParse(txtNombre.Text, txtDescripcion.Text,
-                                 precio, stock, txtUnidad.Text, out AddProduct parseResult))
-                {
-                    throw new Exception("Error al crear el producto. Verifique los datos ingresados.");
-                }
-
-                bd.AgregarProducto(parseResult);
-                // bd.AgregarProducto(txtNombre.Text, txtDescripcion.Text, precio, stock, txtUnidad.Text);
                 MessageBox.Show("Producto agregado correctamente.");
+
+                // 🔄 REFRESCAR EL DATAGRIDVIEW
+                CargarProductos();
 
                 // 4️⃣ Limpiar los campos
                 txtNombre.Clear();
@@ -80,9 +154,6 @@ namespace proyFinalAgropecuaria
                 txtPrecio.Clear();
                 txtStock.Clear();
                 txtUnidad.Clear();
-
-                // 5️⃣ Actualizar el DataGridView si tienes uno
-                dgvProductos.DataSource = bd.MostrarProductos();
             }
             catch (Exception ex)
             {
@@ -90,27 +161,56 @@ namespace proyFinalAgropecuaria
             }
 
         }
-
+        // 5️⃣ Eliminar producto
         private void btnEliminar_Click(object sender, EventArgs e)
         {
+            string sql = "DELETE FROM Productos WHERE Id=$id";
+
             if (!int.TryParse(txtId.Text, out int idProducto))
             {
-                MessageBox.Show("Ingrese un ID válido.");
+                MessageBox.Show("Ingrese un ID válido.", "Error",
+                                MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
             BDAgro bd = new BDAgro();
 
-            bool eliminado = bd.EliminarProducto(idProducto);
+            bool eliminado = bd.EjecutarComandoConResultado(sql, ("$id", idProducto));
 
             if (eliminado)
             {
                 MessageBox.Show("Producto eliminado correctamente.");
+                CargarProductos();
             }
             else
             {
                 MessageBox.Show("No se encontró el ID. Ingrese un ID válido.");
             }
         }
+
+
+        private void frmProductos_Load(object sender, EventArgs e)
+        {
+            CargarProductos();
+
+            dgvProductos.ReadOnly = true;
+            dgvProductos.AllowUserToAddRows = false;
+            dgvProductos.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+        }
+
+
+        private void dgvProductos_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex >= 0)
+            {
+                txtId.Text = dgvProductos.Rows[e.RowIndex].Cells["Id"].Value.ToString();
+                txtNombre.Text = dgvProductos.Rows[e.RowIndex].Cells["Nombre"].Value.ToString();
+                txtDescripcion.Text = dgvProductos.Rows[e.RowIndex].Cells["Descripcion"].Value.ToString();
+                txtPrecio.Text = dgvProductos.Rows[e.RowIndex].Cells["Precio"].Value.ToString();
+                txtStock.Text = dgvProductos.Rows[e.RowIndex].Cells["Stock"].Value.ToString();
+                txtUnidad.Text = dgvProductos.Rows[e.RowIndex].Cells["Unidad"].Value.ToString();
+            }
+        }
+
     }
 }

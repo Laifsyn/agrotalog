@@ -10,7 +10,7 @@ namespace proyFinalAgropecuaria
     internal class BDAgro
     {
         public readonly string connectionDB;
-
+        private static BDAgro? instance;
         public BDAgro()
         {
             string dataFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Data");
@@ -18,8 +18,16 @@ namespace proyFinalAgropecuaria
 
             connectionDB = Path.Combine(dataFolder, "agro.db");
 
-            // Inicializar la base de datos y las tablas si no existen
             CrearBDyTablas();
+        }
+
+        public static BDAgro FromStatic()
+        {
+            if (instance == null)
+            {
+                instance = new BDAgro();
+            }
+            return instance;
         }
 
         private void CrearBDyTablas()
@@ -67,98 +75,6 @@ namespace proyFinalAgropecuaria
             conn.Close();
         }
 
-        // TESTS
-        public enum UnidadMedida
-        {
-            Unidad,
-            Kilo,
-            Litro,
-
-        }
-
-        // TESTS
-        public struct AddProduct
-        {
-            public string nombre;
-            public string descripcion;
-            public double precio;
-            public int stock; // IGNORAR
-            public string unidad; // IGNORAR
-
-            public static bool TryParse(string nombre, string descripcion,
-                                 double precio, int stock, string unidad, out AddProduct result)
-            {
-                try
-                {
-                    if (precio < 0)
-                    {
-                        result = default;
-                        return false;
-                    } else if (stock < 0)
-                    {
-                        result = default;
-                        return false;
-                    };
-
-                    result = new AddProduct
-                    {
-                        nombre = nombre,
-                        descripcion = descripcion,
-                        precio = precio,
-                        stock = stock,
-                        unidad = unidad
-                    };
-                    return true;
-                }
-                catch (ArgumentException)
-                {
-                    result = default;
-                    return false;
-                }
-            }
-
-
-
-            public class AddProductException : Exception
-            {
-                public string failingField;
-                public AddProductException(string message, string fieldName) : base(message)
-                {
-                    failingField = fieldName;
-                }
-            }
-
-            public void Deconstruct(out string nombre, out string descripcion,
-                                    out double precio, out int stock, out string unidad)
-            {
-
-                nombre = this.nombre;
-                descripcion = this.descripcion;
-                precio = this.precio;
-                stock = this.stock;
-                unidad = this.unidad;
-            }
-        }
-
-        public void AgregarProducto(AddProduct product_to_add)
-        {
-
-            // Destructure the struct
-            var (nombre, descripcion, precio, stock, unidad) = product_to_add;
-            string sql = "INSERT INTO Productos (Nombre, Descripcion, Precio, Stock, Unidad) VALUES ($nombre,$descripcion,$precio,$stock,$unidad)";
-            EjecutarComando(sql,
-                ("$nombre", nombre),
-                ("$descripcion", descripcion),
-                ("$precio", precio),
-                ("$stock", stock),
-                ("$unidad", unidad));
-        }
-
-        public bool EliminarProducto(int id)
-        {
-            string sql = "DELETE FROM Productos WHERE Id=$id";
-            return EjecutarComandoConResultado(sql, ("$id", id));
-        }
 
         public DataTable MostrarProductos()
         {
@@ -245,7 +161,7 @@ namespace proyFinalAgropecuaria
         }
 
         // =================== MÉTODOS GENERALES ===================
-        private void EjecutarComando(string sql, params (string, object)[] parametros)
+        public void EjecutarComando(string sql, params (string, object)[] parametros)
         {
             using var conn = new SqliteConnection($"Data Source={connectionDB}");
             conn.Open();
@@ -262,7 +178,7 @@ namespace proyFinalAgropecuaria
             conn.Close();
         }
 
-        private bool EjecutarComandoConResultado(string sql, params (string, object)[] parametros)
+        public bool EjecutarComandoConResultado(string sql, params (string, object)[] parametros)
         {
             using var conn = new SqliteConnection($"Data Source={connectionDB}");
             conn.Open();
@@ -281,7 +197,7 @@ namespace proyFinalAgropecuaria
             return filasAfectadas > 0; // true si afectó filas, false si no
         }
 
-        private DataTable EjecutarConsulta(string sql)
+        public DataTable EjecutarConsulta(string sql)
         {
             using var conn = new SqliteConnection($"Data Source={connectionDB}");
             conn.Open();

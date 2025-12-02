@@ -22,121 +22,121 @@
 
         private void InitializeComponent()
         {
-            this.dgvClientes = new System.Windows.Forms.DataGridView();
-            this.txtId = new System.Windows.Forms.TextBox();
-            this.txtNombre = new System.Windows.Forms.TextBox();
-            this.txtDireccion = new System.Windows.Forms.TextBox();
-            this.txtTelefono = new System.Windows.Forms.TextBox();
-            this.txtEmail = new System.Windows.Forms.TextBox();
-            this.cmbTipoCliente = new System.Windows.Forms.ComboBox();
-            this.btnNuevo = new System.Windows.Forms.Button();
-            this.btnGuardar = new System.Windows.Forms.Button();
-            this.btnEliminar = new System.Windows.Forms.Button();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvClientes)).BeginInit();
-            this.SuspendLayout();
+            dgvClientes = new DataGridView();
+            txtId = new TextBox();
+            txtNombre = new TextBox();
+            txtDireccion = new TextBox();
+            txtTelefono = new TextBox();
+            txtEmail = new TextBox();
+            cmbTipoCliente = new ComboBox();
+            btnNuevo = new Button();
+            btnGuardar = new Button();
+            btnEliminar = new Button();
+            ((System.ComponentModel.ISupportInitialize)dgvClientes).BeginInit();
+            SuspendLayout();
             // 
             // dgvClientes
             // 
-            this.dgvClientes.ColumnHeadersHeight = 29;
-            this.dgvClientes.Location = new System.Drawing.Point(12, 12);
-            this.dgvClientes.MultiSelect = false;
-            this.dgvClientes.Name = "dgvClientes";
-            this.dgvClientes.RowHeadersWidth = 51;
-            this.dgvClientes.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvClientes.Size = new System.Drawing.Size(550, 300);
-            this.dgvClientes.TabIndex = 0;
+            dgvClientes.ColumnHeadersHeight = 29;
+            dgvClientes.Location = new Point(12, 12);
+            dgvClientes.MultiSelect = false;
+            dgvClientes.Name = "dgvClientes";
+            dgvClientes.RowHeadersWidth = 51;
+            dgvClientes.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            dgvClientes.Size = new Size(550, 300);
+            dgvClientes.TabIndex = 0;
+            dgvClientes.CellClick += dgvClientes_CellClick;
             // 
             // txtId
             // 
-            this.txtId.Location = new System.Drawing.Point(580, 12);
-            this.txtId.Name = "txtId";
-            this.txtId.ReadOnly = true;
-            this.txtId.Size = new System.Drawing.Size(100, 22);
-            this.txtId.TabIndex = 1;
+            txtId.Location = new Point(580, 12);
+            txtId.Name = "txtId";
+            txtId.ReadOnly = true;
+            txtId.Size = new Size(100, 27);
+            txtId.TabIndex = 1;
             // 
             // txtNombre
             // 
-            this.txtNombre.Location = new System.Drawing.Point(580, 42);
-            this.txtNombre.Name = "txtNombre";
-            this.txtNombre.Size = new System.Drawing.Size(220, 22);
-            this.txtNombre.TabIndex = 2;
+            txtNombre.Location = new Point(580, 42);
+            txtNombre.Name = "txtNombre";
+            txtNombre.Size = new Size(220, 27);
+            txtNombre.TabIndex = 2;
             // 
             // txtDireccion
             // 
-            this.txtDireccion.Location = new System.Drawing.Point(580, 70);
-            this.txtDireccion.Name = "txtDireccion";
-            this.txtDireccion.Size = new System.Drawing.Size(220, 22);
-            this.txtDireccion.TabIndex = 3;
+            txtDireccion.Location = new Point(580, 70);
+            txtDireccion.Name = "txtDireccion";
+            txtDireccion.Size = new Size(220, 27);
+            txtDireccion.TabIndex = 3;
             // 
             // txtTelefono
             // 
-            this.txtTelefono.Location = new System.Drawing.Point(580, 98);
-            this.txtTelefono.Name = "txtTelefono";
-            this.txtTelefono.Size = new System.Drawing.Size(220, 22);
-            this.txtTelefono.TabIndex = 4;
+            txtTelefono.Location = new Point(580, 98);
+            txtTelefono.Name = "txtTelefono";
+            txtTelefono.Size = new Size(220, 27);
+            txtTelefono.TabIndex = 4;
             // 
             // txtEmail
             // 
-            this.txtEmail.Location = new System.Drawing.Point(580, 126);
-            this.txtEmail.Name = "txtEmail";
-            this.txtEmail.Size = new System.Drawing.Size(220, 22);
-            this.txtEmail.TabIndex = 5;
+            txtEmail.Location = new Point(580, 126);
+            txtEmail.Name = "txtEmail";
+            txtEmail.Size = new Size(220, 27);
+            txtEmail.TabIndex = 5;
             // 
             // cmbTipoCliente
             // 
-            this.cmbTipoCliente.Items.AddRange(new object[] {
-            "Minorista",
-            "Mayorista"});
-            this.cmbTipoCliente.Location = new System.Drawing.Point(580, 154);
-            this.cmbTipoCliente.Name = "cmbTipoCliente";
-            this.cmbTipoCliente.Size = new System.Drawing.Size(150, 24);
-            this.cmbTipoCliente.TabIndex = 6;
+            cmbTipoCliente.Items.AddRange(new object[] { "Minorista", "Mayorista" });
+            cmbTipoCliente.Location = new Point(580, 154);
+            cmbTipoCliente.Name = "cmbTipoCliente";
+            cmbTipoCliente.Size = new Size(150, 28);
+            cmbTipoCliente.TabIndex = 6;
             // 
             // btnNuevo
             // 
-            this.btnNuevo.Location = new System.Drawing.Point(580, 190);
-            this.btnNuevo.Name = "btnNuevo";
-            this.btnNuevo.Size = new System.Drawing.Size(75, 30);
-            this.btnNuevo.TabIndex = 7;
-            this.btnNuevo.Text = "Nuevo";
-            this.btnNuevo.Click += new System.EventHandler(this.btnNuevo_Click);
+            btnNuevo.Location = new Point(580, 190);
+            btnNuevo.Name = "btnNuevo";
+            btnNuevo.Size = new Size(75, 30);
+            btnNuevo.TabIndex = 7;
+            btnNuevo.Text = "Nuevo";
+            btnNuevo.Click += btnNuevo_Click;
             // 
             // btnGuardar
             // 
-            this.btnGuardar.Location = new System.Drawing.Point(665, 190);
-            this.btnGuardar.Name = "btnGuardar";
-            this.btnGuardar.Size = new System.Drawing.Size(75, 30);
-            this.btnGuardar.TabIndex = 8;
-            this.btnGuardar.Text = "Guardar";
-            this.btnGuardar.Click += new System.EventHandler(this.btnGuardar_Click);
+            btnGuardar.Location = new Point(665, 190);
+            btnGuardar.Name = "btnGuardar";
+            btnGuardar.Size = new Size(75, 30);
+            btnGuardar.TabIndex = 8;
+            btnGuardar.Text = "Guardar";
+            btnGuardar.Click += btnGuardar_Click;
             // 
             // btnEliminar
             // 
-            this.btnEliminar.Location = new System.Drawing.Point(750, 190);
-            this.btnEliminar.Name = "btnEliminar";
-            this.btnEliminar.Size = new System.Drawing.Size(75, 30);
-            this.btnEliminar.TabIndex = 9;
-            this.btnEliminar.Text = "Eliminar";
-            this.btnEliminar.Click += new System.EventHandler(this.btnEliminar_Click);
+            btnEliminar.Location = new Point(750, 190);
+            btnEliminar.Name = "btnEliminar";
+            btnEliminar.Size = new Size(75, 30);
+            btnEliminar.TabIndex = 9;
+            btnEliminar.Text = "Eliminar";
+            btnEliminar.Click += btnEliminar_Click;
             // 
             // frmClientes
             // 
-            this.ClientSize = new System.Drawing.Size(840, 330);
-            this.Controls.Add(this.dgvClientes);
-            this.Controls.Add(this.txtId);
-            this.Controls.Add(this.txtNombre);
-            this.Controls.Add(this.txtDireccion);
-            this.Controls.Add(this.txtTelefono);
-            this.Controls.Add(this.txtEmail);
-            this.Controls.Add(this.cmbTipoCliente);
-            this.Controls.Add(this.btnNuevo);
-            this.Controls.Add(this.btnGuardar);
-            this.Controls.Add(this.btnEliminar);
-            this.Name = "frmClientes";
-            this.Text = "Clientes";
-            ((System.ComponentModel.ISupportInitialize)(this.dgvClientes)).EndInit();
-            this.ResumeLayout(false);
-            this.PerformLayout();
+            ClientSize = new Size(840, 330);
+            Controls.Add(dgvClientes);
+            Controls.Add(txtId);
+            Controls.Add(txtNombre);
+            Controls.Add(txtDireccion);
+            Controls.Add(txtTelefono);
+            Controls.Add(txtEmail);
+            Controls.Add(cmbTipoCliente);
+            Controls.Add(btnNuevo);
+            Controls.Add(btnGuardar);
+            Controls.Add(btnEliminar);
+            Name = "frmClientes";
+            Text = "Clientes";
+            Load += frmCliente_Load;
+            ((System.ComponentModel.ISupportInitialize)dgvClientes).EndInit();
+            ResumeLayout(false);
+            PerformLayout();
 
         }
     }
