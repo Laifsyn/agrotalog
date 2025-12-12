@@ -82,6 +82,7 @@ namespace proyFinalAgropecuaria
             txtTelefono.Clear();
             txtEmail.Clear();
             cmbTipoCliente.Text = "";
+            btnGuardar.Text = "Guardar";
         }
 
         public void CargarProductos()
@@ -116,58 +117,89 @@ namespace proyFinalAgropecuaria
                 cmbTipoCliente.Text
             );
 
-            if (!newCliente.TryGet(out Clientes clientes))
+            if (btnGuardar.Text == "Actualizar")
             {
-                ClientesError error = newCliente.Error!;
-                string errMsg = "";
-                switch (error)
+               sql = @"UPDATE Clientes 
+               SET nombre = $nombre,
+                   direccion = $direccion,
+                   telefono = $telefono,
+                   email = $email,
+                   tipoCliente = $tipoCliente
+               WHERE id = $id";
+
+                bool actualizado = bd.EjecutarComandoConResultado(sql,
+                    ("$nombre", txtNombre.Text),
+                    ("$direccion", txtDireccion.Text),
+                    ("$telefono", txtTelefono.Text),
+                    ("$email", txtEmail.Text),
+                    ("$tipoCliente", cmbTipoCliente.Text),
+                    ("$id", txtId.Text)
+                );
+
+
+                if (actualizado)
                 {
-                    case ClientesError.NombreVacio:
-                        errMsg = "El campo de Nombre no puede estar vacío.";
-                        break;
-                    case ClientesError.EmailVacio:
-                        errMsg = "El campo de Email no puede estar vacío.";
-                        break;
-                    case ClientesError.TipoClienteInvalido:
-                        errMsg = $"El Tipo de Cliente `{cmbTipoCliente.Text}` no es válido.";
-                        break;
+                    MessageBox.Show("Cliente actualizado correctamente.");
+                    CargarProductos();
                 }
-                MessageBox.Show(errMsg, "Error",
-                                MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
+                else
+                {
+                    MessageBox.Show("No se encontró el cliente o no se realizaron cambios.");
+                }
             }
-
-            sql = "INSERT INTO Clientes (Nombre, Direccion, Telefono, Email, TipoCliente) VALUES ($nombre,$direccion,$telefono,$email,$tipoCliente)";
-
-            try
+            else if (btnGuardar.Text == "Guardar")
             {
-                MessageBox.Show($"Tipo de cliente: `{clientes.TipoCliente}`");
-                bd.EjecutarComando(sql,
-                    ("$nombre", clientes.Nombre),
-                    ("$direccion", clientes.Direcion),
-                    ("$telefono", clientes.Telefono),
-                    ("$email", clientes.Email),
-                    ("$tipoCliente", clientes.TipoCliente.ToString()));
+                if (!newCliente.TryGet(out Clientes clientes))
+                {
+                    ClientesError error = newCliente.Error!;
+                    string errMsg = "";
+                    switch (error)
+                    {
+                        case ClientesError.NombreVacio:
+                            errMsg = "El campo de Nombre no puede estar vacío.";
+                            break;
+                        case ClientesError.EmailVacio:
+                            errMsg = "El campo de Email no puede estar vacío.";
+                            break;
+                        case ClientesError.TipoClienteInvalido:
+                            errMsg = $"El Tipo de Cliente `{cmbTipoCliente.Text}` no es válido.";
+                            break;
+                    }
+                    MessageBox.Show(errMsg, "Error",
+                                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
 
-                MessageBox.Show("Producto agregado correctamente.");
+                sql = "INSERT INTO Clientes (Nombre, Direccion, Telefono, Email, TipoCliente) VALUES ($nombre,$direccion,$telefono,$email,$tipoCliente)";
 
-                // 🔄 REFRESCAR EL DATAGRIDVIEW
-                CargarProductos();
+                try
+                {
+                    MessageBox.Show($"Tipo de cliente: `{clientes.TipoCliente}`");
+                    bd.EjecutarComando(sql,
+                        ("$nombre", clientes.Nombre),
+                        ("$direccion", clientes.Direcion),
+                        ("$telefono", clientes.Telefono),
+                        ("$email", clientes.Email),
+                        ("$tipoCliente", clientes.TipoCliente.ToString()));
 
-                // 4️⃣ Limpiar los campos
-                txtNombre.Clear();
-                txtDireccion.Clear();
-                txtTelefono.Clear();
-                txtEmail.Clear();
-                cmbTipoCliente.Text = "";
+                    MessageBox.Show("Producto agregado correctamente.");
+
+                    // 🔄 REFRESCAR EL DATAGRIDVIEW
+                    CargarProductos();
+
+                    // 4️⃣ Limpiar los campos
+                    txtNombre.Clear();
+                    txtDireccion.Clear();
+                    txtTelefono.Clear();
+                    txtEmail.Clear();
+                    cmbTipoCliente.Text = "";
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error al agregar el producto: " + ex.Message, "Error",
+                                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error al agregar el producto: " + ex.Message, "Error",
-                                MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-
-
             // Lógica que implementará tu compañero
         }
 
@@ -216,10 +248,11 @@ namespace proyFinalAgropecuaria
             {
                 txtId.Text = dgvClientes.Rows[e.RowIndex].Cells["Id"].Value.ToString();
                 txtNombre.Text = dgvClientes.Rows[e.RowIndex].Cells["Nombre"].Value.ToString();
-                txtDireccion.Text = dgvClientes.Rows[e.RowIndex].Cells["Dirección"].Value.ToString();
+                txtDireccion.Text = dgvClientes.Rows[e.RowIndex].Cells["Direccion"].Value.ToString();
                 txtTelefono.Text = dgvClientes.Rows[e.RowIndex].Cells["Telefono"].Value.ToString();
                 txtEmail.Text = dgvClientes.Rows[e.RowIndex].Cells["Email"].Value.ToString();
-
+                cmbTipoCliente.Text = dgvClientes.Rows[e.RowIndex].Cells["TipoCliente"].Value.ToString();
+                btnGuardar.Text = "Actualizar";
             }
         }
     }

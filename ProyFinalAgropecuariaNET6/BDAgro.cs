@@ -75,13 +75,6 @@ namespace proyFinalAgropecuaria
             conn.Close();
         }
 
-
-        public DataTable MostrarProductos()
-        {
-            string sql = "SELECT * FROM Productos";
-            return EjecutarConsulta(sql);
-        }
-
         // =================== CLIENTES ===================
         public void AgregarCliente(string nombre, string direccion, string telefono, string email, string tipoCliente)
         {

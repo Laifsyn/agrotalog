@@ -70,7 +70,7 @@ namespace proyFinalAgropecuaria
             // Destructure the struct
             var (nombre, descripcion, precio, stock, unidad) = product_to_add;
             string sql = "INSERT INTO Productos (Nombre, Descripcion, Precio, Stock, Unidad) VALUES ($nombre,$descripcion,$precio,$stock,$unidad)";
-            BDAgro bd = new BDAgro();
+            BDAgro bd = BDAgro.FromStatic();
             bd.EjecutarComando(sql,
                 ("$nombre", nombre),
                 ("$descripcion", descripcion),
@@ -82,7 +82,7 @@ namespace proyFinalAgropecuaria
         public void CargarProductos()
         {
             string sql = "SELECT * FROM Productos";
-            BDAgro bd = new BDAgro();
+            BDAgro bd = BDAgro.FromStatic();
             DataTable dt = bd.EjecutarConsulta(sql);
             dgvProductos.DataSource = dt;
         }
@@ -97,6 +97,7 @@ namespace proyFinalAgropecuaria
             txtPrecio.Clear();
             txtStock.Clear();
             txtUnidad.Clear();
+            btnGuardar.Text = "Guardar";
         }
 
         // 3️⃣ Guardar el producto
@@ -112,9 +113,33 @@ namespace proyFinalAgropecuaria
             //                    MessageBoxButtons.OK, MessageBoxIcon.Error);
             //    return;
             //}
+            if(btnGuardar.Text == "Actualizar")
+            {
+                BDAgro bd = BDAgro.FromStatic();
+                String sql = "UPDATE Productos SET Nombre=$nombre, Descripcion=$descripcion, Precio=$precio, Stock=$stock, Unidad=$unidad WHERE Id=$id";
+                bool actualizado = bd.EjecutarComandoConResultado(sql,
+                    ("$nombre", txtNombre.Text),
+                    ("$descripcion", txtDescripcion.Text),
+                    ("$precio", decimal.Parse(txtPrecio.Text)),
+                    ("$stock", int.Parse(txtStock.Text)),
+                    ("$unidad", txtUnidad.Text),
+                    ("$id", int.Parse(txtId.Text))
+                );
 
+                if (actualizado)
+                {
+                    MessageBox.Show("Cliente actualizado correctamente.");
+                    CargarProductos();
+                }
+                else
+                {
+                    MessageBox.Show("No se encontró el cliente o no se realizaron cambios.");
+                }
 
-            Result<Productos, ProductError> productResult = Productos.New(
+            }
+            else if (btnGuardar.Text == "Guardar")
+            {
+                Result<Productos, ProductError> productResult = Productos.New(
                 txtNombre.Text,
                 txtDescripcion.Text,
                 double.Parse(txtPrecio.Text),
@@ -122,44 +147,44 @@ namespace proyFinalAgropecuaria
                 txtUnidad.Text
                 );
 
-            if (productResult.TryGet(out Productos producto) is false)
-            {
-                switch (productResult.Error!)
+                if (productResult.TryGet(out Productos producto) is false)
                 {
-                    case ProductError.NegativePrice:
-                        MessageBox.Show("El precio no puede ser negativo.", "Error",
-                                        MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        break;
-                    case ProductError.BlankName:
-                        MessageBox.Show("El nombre no puede estar vacío.", "Error",
-                                        MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        break;
+                    switch (productResult.Error!)
+                    {
+                        case ProductError.NegativePrice:
+                            MessageBox.Show("El precio no puede ser negativo.", "Error",
+                                            MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            break;
+                        case ProductError.BlankName:
+                            MessageBox.Show("El nombre no puede estar vacío.", "Error",
+                                            MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            break;
+                    }
+                    return;
                 }
-                return;
+
+
+                try
+                {
+                    AgregarProducto(producto);
+
+                    MessageBox.Show("Producto agregado correctamente.");
+
+                    // 🔄 REFRESCAR EL DATAGRIDVIEW
+                    CargarProductos();
+
+                    // 4️⃣ Limpiar los campos
+                    txtNombre.Clear();
+                    txtDescripcion.Clear();
+                    txtPrecio.Clear();
+                    txtStock.Clear();
+                    txtUnidad.Clear();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error al guardar el producto: " + ex.Message);
+                }
             }
-
-
-            try
-            {
-                AgregarProducto(producto);
-
-                MessageBox.Show("Producto agregado correctamente.");
-
-                // 🔄 REFRESCAR EL DATAGRIDVIEW
-                CargarProductos();
-
-                // 4️⃣ Limpiar los campos
-                txtNombre.Clear();
-                txtDescripcion.Clear();
-                txtPrecio.Clear();
-                txtStock.Clear();
-                txtUnidad.Clear();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error al guardar el producto: " + ex.Message);
-            }
-
         }
         // 5️⃣ Eliminar producto
         private void btnEliminar_Click(object sender, EventArgs e)
@@ -209,6 +234,7 @@ namespace proyFinalAgropecuaria
                 txtPrecio.Text = dgvProductos.Rows[e.RowIndex].Cells["Precio"].Value.ToString();
                 txtStock.Text = dgvProductos.Rows[e.RowIndex].Cells["Stock"].Value.ToString();
                 txtUnidad.Text = dgvProductos.Rows[e.RowIndex].Cells["Unidad"].Value.ToString();
+                btnGuardar.Text = "Actualizar";
             }
         }
 
