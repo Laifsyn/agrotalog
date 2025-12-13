@@ -42,9 +42,7 @@ namespace proyFinalAgropecuaria
                     Id INTEGER PRIMARY KEY AUTOINCREMENT,
                     Nombre TEXT NOT NULL,
                     Descripcion TEXT,
-                    Precio REAL,
-                    Stock INTEGER,
-                    Unidad TEXT
+                    Precio REAL
                 );";
             cmd.ExecuteNonQuery();
 
@@ -65,7 +63,6 @@ namespace proyFinalAgropecuaria
                 CREATE TABLE IF NOT EXISTS Proveedores (
                     Id INTEGER PRIMARY KEY AUTOINCREMENT,
                     Nombre TEXT NOT NULL,
-                    Contacto TEXT,
                     Telefono TEXT,
                     Email TEXT,
                     Direccion TEXT
@@ -75,52 +72,14 @@ namespace proyFinalAgropecuaria
             conn.Close();
         }
 
-        // =================== CLIENTES ===================
-        public void AgregarCliente(string nombre, string direccion, string telefono, string email, string tipoCliente)
-        {
-            string sql = "INSERT INTO Clientes (Nombre, Direccion, Telefono, Email, TipoCliente) VALUES ($nombre,$direccion,$telefono,$email,$tipoCliente)";
-            EjecutarComando(sql,
-                ("$nombre", nombre),
-                ("$direccion", direccion),
-                ("$telefono", telefono),
-                ("$email", email),
-                ("$tipoCliente", tipoCliente));
-        }
-
-        public DataTable MostrarClientes()
-        {
-            string sql = "SELECT * FROM Clientes";
-            return EjecutarConsulta(sql);
-        }
-
-        public bool ActualizarCliente(int id, string nombre, string direccion, string telefono, string email, string tipoCliente)
-        {
-            string sql = @"
-                UPDATE Clientes
-                SET Nombre=$nombre, Direccion=$direccion, Telefono=$telefono, Email=$email, TipoCliente=$tipoCliente
-                WHERE Id=$id";
-            return EjecutarComandoConResultado(sql,
-                ("$nombre", nombre),
-                ("$direccion", direccion),
-                ("$telefono", telefono),
-                ("$email", email),
-                ("$tipoCliente", tipoCliente),
-                ("$id", id));
-        }
-
-        public bool EliminarCliente(int id)
-        {
-            string sql = "DELETE FROM Clientes WHERE Id=$id";
-            return EjecutarComandoConResultado(sql, ("$id", id));
-        }
-
         // =================== PROVEEDORES ===================
         public void AgregarProveedor(string nombre, string contacto, string telefono, string email, string direccion)
         {
-            string sql = "INSERT INTO Proveedores (Nombre, Contacto, Telefono, Email, Direccion) VALUES ($nombre,$contacto,$telefono,$email,$direccion)";
+
+
+            string sql = "INSERT INTO Proveedores (Nombre, Telefono, Email, Direccion) VALUES ($nombre,$telefono,$email,$direccion)";
             EjecutarComando(sql,
                 ("$nombre", nombre),
-                ("$contacto", contacto),
                 ("$telefono", telefono),
                 ("$email", email),
                 ("$direccion", direccion));

@@ -7,8 +7,6 @@
         private System.Windows.Forms.TextBox txtNombre;
         private System.Windows.Forms.TextBox txtDescripcion;
         private System.Windows.Forms.TextBox txtPrecio;
-        private System.Windows.Forms.TextBox txtStock;
-        private System.Windows.Forms.TextBox txtUnidad;
         private System.Windows.Forms.Button btnNuevo;
         private System.Windows.Forms.Button btnGuardar;
         private System.Windows.Forms.Button btnEliminar;
@@ -25,8 +23,6 @@
             txtNombre = new TextBox();
             txtDescripcion = new TextBox();
             txtPrecio = new TextBox();
-            txtStock = new TextBox();
-            txtUnidad = new TextBox();
             btnNuevo = new Button();
             btnGuardar = new Button();
             btnEliminar = new Button();
@@ -34,8 +30,6 @@
             label1 = new Label();
             label2 = new Label();
             label3 = new Label();
-            label4 = new Label();
-            label5 = new Label();
             ((System.ComponentModel.ISupportInitialize)dgvProductos).BeginInit();
             SuspendLayout();
             // 
@@ -69,20 +63,6 @@
             txtPrecio.Name = "txtPrecio";
             txtPrecio.Size = new Size(100, 27);
             txtPrecio.TabIndex = 4;
-            // 
-            // txtStock
-            // 
-            txtStock.Location = new Point(580, 207);
-            txtStock.Name = "txtStock";
-            txtStock.Size = new Size(100, 27);
-            txtStock.TabIndex = 5;
-            // 
-            // txtUnidad
-            // 
-            txtUnidad.Location = new Point(580, 257);
-            txtUnidad.Name = "txtUnidad";
-            txtUnidad.Size = new Size(100, 27);
-            txtUnidad.TabIndex = 6;
             // 
             // btnNuevo
             // 
@@ -151,29 +131,9 @@
             label3.TabIndex = 12;
             label3.Text = "Precio";
             // 
-            // label4
-            // 
-            label4.AutoSize = true;
-            label4.Location = new Point(580, 186);
-            label4.Name = "label4";
-            label4.Size = new Size(45, 20);
-            label4.TabIndex = 13;
-            label4.Text = "Stock";
-            // 
-            // label5
-            // 
-            label5.AutoSize = true;
-            label5.Location = new Point(580, 237);
-            label5.Name = "label5";
-            label5.Size = new Size(57, 20);
-            label5.TabIndex = 14;
-            label5.Text = "Unidad";
-            // 
             // frmProductos
             // 
             ClientSize = new Size(840, 330);
-            Controls.Add(label5);
-            Controls.Add(label4);
             Controls.Add(label3);
             Controls.Add(label2);
             Controls.Add(label1);
@@ -182,8 +142,6 @@
             Controls.Add(txtNombre);
             Controls.Add(txtDescripcion);
             Controls.Add(txtPrecio);
-            Controls.Add(txtStock);
-            Controls.Add(txtUnidad);
             Controls.Add(btnNuevo);
             Controls.Add(btnGuardar);
             Controls.Add(btnEliminar);
@@ -200,7 +158,5 @@
         private Label label1;
         private Label label2;
         private Label label3;
-        private Label label4;
-        private Label label5;
     }
 }

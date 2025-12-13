@@ -27,7 +27,7 @@ namespace proyFinalAgropecuaria
             public int Stock;
             public string Unidad;
 
-            public static Result<Productos, ProductError> New(string nombre, string descripcion, double precio, int stock, string unidad)
+            public static Result<Productos, ProductError> New(string nombre, string descripcion, double precio)
             {
                 if (precio < 0.0)
                 {
@@ -43,9 +43,7 @@ namespace proyFinalAgropecuaria
                 {
                     Nombre = nombre,
                     Descripcion = descripcion,
-                    Precio = precio,
-                    Stock = stock,
-                    Unidad = unidad
+                    Precio = precio
                 };
                 return producto;
             }
@@ -69,14 +67,12 @@ namespace proyFinalAgropecuaria
 
             // Destructure the struct
             var (nombre, descripcion, precio, stock, unidad) = product_to_add;
-            string sql = "INSERT INTO Productos (Nombre, Descripcion, Precio, Stock, Unidad) VALUES ($nombre,$descripcion,$precio,$stock,$unidad)";
+            string sql = "INSERT INTO Productos (Nombre, Descripcion, Precio) VALUES ($nombre,$descripcion,$precio)";
             BDAgro bd = BDAgro.FromStatic();
             bd.EjecutarComando(sql,
                 ("$nombre", nombre),
                 ("$descripcion", descripcion),
-                ("$precio", precio),
-                ("$stock", stock),
-                ("$unidad", unidad));
+                ("$precio", precio));
         }
 
         public void CargarProductos()
@@ -95,8 +91,6 @@ namespace proyFinalAgropecuaria
             txtNombre.Clear();
             txtDescripcion.Clear();
             txtPrecio.Clear();
-            txtStock.Clear();
-            txtUnidad.Clear();
             btnGuardar.Text = "Guardar";
         }
 
@@ -116,13 +110,11 @@ namespace proyFinalAgropecuaria
             if(btnGuardar.Text == "Actualizar")
             {
                 BDAgro bd = BDAgro.FromStatic();
-                String sql = "UPDATE Productos SET Nombre=$nombre, Descripcion=$descripcion, Precio=$precio, Stock=$stock, Unidad=$unidad WHERE Id=$id";
+                String sql = "UPDATE Productos SET Nombre=$nombre, Descripcion=$descripcion, Precio=$precio WHERE Id=$id";
                 bool actualizado = bd.EjecutarComandoConResultado(sql,
                     ("$nombre", txtNombre.Text),
                     ("$descripcion", txtDescripcion.Text),
                     ("$precio", decimal.Parse(txtPrecio.Text)),
-                    ("$stock", int.Parse(txtStock.Text)),
-                    ("$unidad", txtUnidad.Text),
                     ("$id", int.Parse(txtId.Text))
                 );
 
@@ -142,9 +134,7 @@ namespace proyFinalAgropecuaria
                 Result<Productos, ProductError> productResult = Productos.New(
                 txtNombre.Text,
                 txtDescripcion.Text,
-                double.Parse(txtPrecio.Text),
-                int.Parse(txtStock.Text),
-                txtUnidad.Text
+                double.Parse(txtPrecio.Text)
                 );
 
                 if (productResult.TryGet(out Productos producto) is false)
@@ -177,8 +167,6 @@ namespace proyFinalAgropecuaria
                     txtNombre.Clear();
                     txtDescripcion.Clear();
                     txtPrecio.Clear();
-                    txtStock.Clear();
-                    txtUnidad.Clear();
                 }
                 catch (Exception ex)
                 {
@@ -232,8 +220,6 @@ namespace proyFinalAgropecuaria
                 txtNombre.Text = dgvProductos.Rows[e.RowIndex].Cells["Nombre"].Value.ToString();
                 txtDescripcion.Text = dgvProductos.Rows[e.RowIndex].Cells["Descripcion"].Value.ToString();
                 txtPrecio.Text = dgvProductos.Rows[e.RowIndex].Cells["Precio"].Value.ToString();
-                txtStock.Text = dgvProductos.Rows[e.RowIndex].Cells["Stock"].Value.ToString();
-                txtUnidad.Text = dgvProductos.Rows[e.RowIndex].Cells["Unidad"].Value.ToString();
                 btnGuardar.Text = "Actualizar";
             }
         }
