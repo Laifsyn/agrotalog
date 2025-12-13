@@ -28,42 +28,48 @@
             btnAgregar = new Button();
             btnQuitar = new Button();
             btnFinalizar = new Button();
+            comboBox1 = new ComboBox();
             ((System.ComponentModel.ISupportInitialize)dgvProductos).BeginInit();
             ((System.ComponentModel.ISupportInitialize)dgvVenta).BeginInit();
             SuspendLayout();
             // 
             // dgvProductos
             // 
+            dgvProductos.ColumnHeadersHeight = 29;
             dgvProductos.Location = new Point(12, 40);
             dgvProductos.MultiSelect = false;
             dgvProductos.Name = "dgvProductos";
+            dgvProductos.RowHeadersWidth = 51;
             dgvProductos.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dgvProductos.Size = new Size(400, 300);
             dgvProductos.TabIndex = 0;
             // 
             // dgvVenta
             // 
+            dgvVenta.ColumnHeadersHeight = 29;
             dgvVenta.Location = new Point(430, 40);
             dgvVenta.MultiSelect = false;
             dgvVenta.Name = "dgvVenta";
+            dgvVenta.RowHeadersWidth = 51;
             dgvVenta.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dgvVenta.Size = new Size(400, 300);
             dgvVenta.TabIndex = 1;
             // 
             // cmbClientes
             // 
-            cmbClientes.Location = new Point(80, 12);
+            cmbClientes.Items.AddRange(new object[] { "Ventas", "Compras" });
+            cmbClientes.Location = new Point(12, 6);
             cmbClientes.Name = "cmbClientes";
-            cmbClientes.Size = new Size(200, 23);
+            cmbClientes.Size = new Size(124, 28);
             cmbClientes.TabIndex = 2;
+            cmbClientes.SelectedIndexChanged += cmbClientes_SelectedIndexChanged;
             // 
             // lblCliente
             // 
-            lblCliente.Location = new Point(12, 12);
+            lblCliente.Location = new Point(142, 9);
             lblCliente.Name = "lblCliente";
             lblCliente.Size = new Size(70, 20);
             lblCliente.TabIndex = 3;
-            lblCliente.Text = "Cliente:";
             // 
             // lblTotal
             // 
@@ -100,9 +106,17 @@
             btnFinalizar.Text = "Guardar";
             btnFinalizar.Click += btnGuardar_Click;
             // 
+            // comboBox1
+            // 
+            comboBox1.Location = new Point(218, 6);
+            comboBox1.Name = "comboBox1";
+            comboBox1.Size = new Size(124, 28);
+            comboBox1.TabIndex = 8;
+            // 
             // frmVentas
             // 
             ClientSize = new Size(850, 400);
+            Controls.Add(comboBox1);
             Controls.Add(dgvProductos);
             Controls.Add(dgvVenta);
             Controls.Add(cmbClientes);
@@ -117,5 +131,7 @@
             ((System.ComponentModel.ISupportInitialize)dgvVenta).EndInit();
             ResumeLayout(false);
         }
+
+        private ComboBox comboBox1;
     }
 }

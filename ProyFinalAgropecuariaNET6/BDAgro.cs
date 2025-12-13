@@ -139,46 +139,6 @@ namespace proyFinalAgropecuaria
             conn.Close();
         }
 
-        // =================== PROVEEDORES ===================
-        public void AgregarProveedor(string nombre, string contacto, string telefono, string email, string direccion)
-        {
-
-
-            string sql = "INSERT INTO Proveedores (Nombre, Telefono, Email, Direccion) VALUES ($nombre,$telefono,$email,$direccion)";
-            EjecutarComando(sql,
-                ("$nombre", nombre),
-                ("$telefono", telefono),
-                ("$email", email),
-                ("$direccion", direccion));
-        }
-
-        public DataTable MostrarProveedores()
-        {
-            string sql = "SELECT * FROM Proveedores";
-            return EjecutarConsulta(sql);
-        }
-
-        public bool ActualizarProveedor(int id, string nombre, string contacto, string telefono, string email, string direccion)
-        {
-            string sql = @"
-                UPDATE Proveedores
-                SET Nombre=$nombre, Contacto=$contacto, Telefono=$telefono, Email=$email, Direccion=$direccion
-                WHERE Id=$id";
-            return EjecutarComandoConResultado(sql,
-                ("$nombre", nombre),
-                ("$contacto", contacto),
-                ("$telefono", telefono),
-                ("$email", email),
-                ("$direccion", direccion),
-                ("$id", id));
-        }
-
-        public bool EliminarProveedor(int id)
-        {
-            string sql = "DELETE FROM Proveedores WHERE Id=$id";
-            return EjecutarComandoConResultado(sql, ("$id", id));
-        }
-
         // =================== MÉTODOS GENERALES ===================
         public void EjecutarComando(string sql, params (string, object)[] parametros)
         {
