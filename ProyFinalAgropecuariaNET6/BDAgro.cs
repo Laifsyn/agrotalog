@@ -69,6 +69,73 @@ namespace proyFinalAgropecuaria
                 );";
             cmd.ExecuteNonQuery();
 
+            cmd.CommandText = @"CREATE TABLE IF NOT EXISTS Compras (
+                                Id INTEGER PRIMARY KEY AUTOINCREMENT,
+                                ProveedorId INTEGER NOT NULL,
+                                Fecha TEXT NOT NULL,
+                                Total REAL NOT NULL,
+
+                                FOREIGN KEY (ProveedorId) REFERENCES Proveedores(Id)
+                            );";
+            cmd.ExecuteNonQuery();
+
+            cmd.CommandText = @"CREATE TABLE IF NOT EXISTS DetalleCompras (
+                                Id INTEGER PRIMARY KEY AUTOINCREMENT,
+                                CompraId INTEGER NOT NULL,
+                                ProductoId INTEGER NOT NULL,
+                                Cantidad INTEGER NOT NULL,
+                                PrecioUnitario REAL NOT NULL,
+                                Subtotal REAL NOT NULL,
+
+                                FOREIGN KEY (CompraId) REFERENCES Compras(Id),
+                                FOREIGN KEY (ProductoId) REFERENCES Productos(Id)
+                            );";
+            cmd.ExecuteNonQuery();
+
+            cmd.CommandText = @"CREATE TABLE IF NOT EXISTS Ventas (
+                                Id INTEGER PRIMARY KEY AUTOINCREMENT,
+                                ClienteId INTEGER NOT NULL,
+                                Fecha TEXT NOT NULL,
+                                Total REAL NOT NULL,
+
+                                FOREIGN KEY (ClienteId) REFERENCES Clientes(Id)
+                            );";
+            cmd.ExecuteNonQuery();
+
+            cmd.CommandText = @"CREATE TABLE IF NOT EXISTS DetalleVentas (
+                                Id INTEGER PRIMARY KEY AUTOINCREMENT,
+                                VentaId INTEGER NOT NULL,
+                                ProductoId INTEGER NOT NULL,
+                                Cantidad INTEGER NOT NULL,
+                                PrecioUnitario REAL NOT NULL,
+                                Subtotal REAL NOT NULL,
+
+                                FOREIGN KEY (VentaId) REFERENCES Ventas(Id),
+                                FOREIGN KEY (ProductoId) REFERENCES Productos(Id)
+                            );";
+            cmd.ExecuteNonQuery();
+
+            cmd.CommandText = @"CREATE TABLE IF NOT EXISTS Inventario (
+                                ProductoId INTEGER PRIMARY KEY,
+                                StockActual INTEGER NOT NULL DEFAULT 0,
+                                StockMinimo INTEGER NOT NULL DEFAULT 0,
+
+                                FOREIGN KEY (ProductoId) REFERENCES Productos(Id)
+                            );";
+            cmd.ExecuteNonQuery();
+
+            cmd.CommandText = @"CREATE TABLE IF NOT EXISTS MovimientosInventario (
+                                Id INTEGER PRIMARY KEY AUTOINCREMENT,
+                                ProductoId INTEGER NOT NULL,
+                                TipoMovimiento TEXT CHECK(TipoMovimiento IN ('ENTRADA','SALIDA')),
+                                Cantidad INTEGER NOT NULL,
+                                Fecha TEXT NOT NULL,
+                                Referencia TEXT,
+
+                                FOREIGN KEY (ProductoId) REFERENCES Productos(Id)
+                            );";
+            cmd.ExecuteNonQuery();
+
             conn.Close();
         }
 

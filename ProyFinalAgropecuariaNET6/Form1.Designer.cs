@@ -48,8 +48,9 @@
             panelMenu.Controls.Add(btnInventario);
             panelMenu.Dock = DockStyle.Left;
             panelMenu.Location = new Point(0, 0);
+            panelMenu.Margin = new Padding(3, 4, 3, 4);
             panelMenu.Name = "panelMenu";
-            panelMenu.Size = new Size(175, 422);
+            panelMenu.Size = new Size(200, 563);
             panelMenu.TabIndex = 0;
             // 
             // btnProductos
@@ -57,9 +58,10 @@
             btnProductos.BackColor = Color.FromArgb(30, 30, 60);
             btnProductos.FlatStyle = FlatStyle.Flat;
             btnProductos.ForeColor = Color.White;
-            btnProductos.Location = new Point(9, 19);
+            btnProductos.Location = new Point(10, 25);
+            btnProductos.Margin = new Padding(3, 4, 3, 4);
             btnProductos.Name = "btnProductos";
-            btnProductos.Size = new Size(158, 38);
+            btnProductos.Size = new Size(181, 51);
             btnProductos.TabIndex = 1;
             btnProductos.Text = "Productos";
             btnProductos.UseVisualStyleBackColor = false;
@@ -68,9 +70,10 @@
             // 
             btnClientes.FlatStyle = FlatStyle.Flat;
             btnClientes.ForeColor = Color.White;
-            btnClientes.Location = new Point(9, 66);
+            btnClientes.Location = new Point(10, 88);
+            btnClientes.Margin = new Padding(3, 4, 3, 4);
             btnClientes.Name = "btnClientes";
-            btnClientes.Size = new Size(158, 38);
+            btnClientes.Size = new Size(181, 51);
             btnClientes.TabIndex = 2;
             btnClientes.Text = "Clientes";
             btnClientes.UseVisualStyleBackColor = true;
@@ -79,9 +82,10 @@
             // 
             btnProveedores.FlatStyle = FlatStyle.Flat;
             btnProveedores.ForeColor = Color.White;
-            btnProveedores.Location = new Point(9, 112);
+            btnProveedores.Location = new Point(10, 149);
+            btnProveedores.Margin = new Padding(3, 4, 3, 4);
             btnProveedores.Name = "btnProveedores";
-            btnProveedores.Size = new Size(158, 38);
+            btnProveedores.Size = new Size(181, 51);
             btnProveedores.TabIndex = 3;
             btnProveedores.Text = "Proveedores";
             btnProveedores.UseVisualStyleBackColor = true;
@@ -90,20 +94,22 @@
             // 
             btnVentas.FlatStyle = FlatStyle.Flat;
             btnVentas.ForeColor = Color.White;
-            btnVentas.Location = new Point(9, 159);
+            btnVentas.Location = new Point(10, 212);
+            btnVentas.Margin = new Padding(3, 4, 3, 4);
             btnVentas.Name = "btnVentas";
-            btnVentas.Size = new Size(158, 38);
+            btnVentas.Size = new Size(181, 51);
             btnVentas.TabIndex = 4;
-            btnVentas.Text = "Ventas";
+            btnVentas.Text = "Ventas/Compras";
             btnVentas.UseVisualStyleBackColor = true;
             // 
             // btnInventario
             // 
             btnInventario.FlatStyle = FlatStyle.Flat;
             btnInventario.ForeColor = Color.White;
-            btnInventario.Location = new Point(9, 206);
+            btnInventario.Location = new Point(10, 275);
+            btnInventario.Margin = new Padding(3, 4, 3, 4);
             btnInventario.Name = "btnInventario";
-            btnInventario.Size = new Size(158, 38);
+            btnInventario.Size = new Size(181, 51);
             btnInventario.TabIndex = 5;
             btnInventario.Text = "Inventario";
             btnInventario.UseVisualStyleBackColor = true;
@@ -111,18 +117,20 @@
             // panelContenedor
             // 
             panelContenedor.Dock = DockStyle.Fill;
-            panelContenedor.Location = new Point(175, 0);
+            panelContenedor.Location = new Point(200, 0);
+            panelContenedor.Margin = new Padding(3, 4, 3, 4);
             panelContenedor.Name = "panelContenedor";
-            panelContenedor.Size = new Size(863, 422);
+            panelContenedor.Size = new Size(986, 563);
             panelContenedor.TabIndex = 6;
             // 
             // FormMenu
             // 
-            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1038, 422);
+            ClientSize = new Size(1186, 563);
             Controls.Add(panelContenedor);
             Controls.Add(panelMenu);
+            Margin = new Padding(3, 4, 3, 4);
             Name = "FormMenu";
             Text = "Sistema AgroCampo";
             panelMenu.ResumeLayout(false);
