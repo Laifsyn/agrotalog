@@ -28,9 +28,7 @@
             btnAgregar = new Button();
             btnQuitar = new Button();
             btnFinalizar = new Button();
-            cmbModo = new ComboBox();
-            lblCuentas = new Label();
-            label2 = new Label();
+            comboBox1 = new ComboBox();
             ((System.ComponentModel.ISupportInitialize)dgvProductos).BeginInit();
             ((System.ComponentModel.ISupportInitialize)dgvVenta).BeginInit();
             SuspendLayout();
@@ -38,7 +36,7 @@
             // dgvProductos
             // 
             dgvProductos.ColumnHeadersHeight = 29;
-            dgvProductos.Location = new Point(20, 65);
+            dgvProductos.Location = new Point(12, 40);
             dgvProductos.MultiSelect = false;
             dgvProductos.Name = "dgvProductos";
             dgvProductos.RowHeadersWidth = 51;
@@ -49,7 +47,7 @@
             // dgvVenta
             // 
             dgvVenta.ColumnHeadersHeight = 29;
-            dgvVenta.Location = new Point(438, 65);
+            dgvVenta.Location = new Point(430, 40);
             dgvVenta.MultiSelect = false;
             dgvVenta.Name = "dgvVenta";
             dgvVenta.RowHeadersWidth = 51;
@@ -59,10 +57,10 @@
             // 
             // cmbClientes
             // 
-            cmbClientes.Items.AddRange(new object[] { "ListaDeClientes" });
+            cmbClientes.Items.AddRange(new object[] { "Ventas", "Compras" });
             cmbClientes.Location = new Point(12, 6);
             cmbClientes.Name = "cmbClientes";
-            cmbClientes.Size = new Size(124, 23);
+            cmbClientes.Size = new Size(124, 28);
             cmbClientes.TabIndex = 2;
             cmbClientes.SelectedIndexChanged += cmbClientes_SelectedIndexChanged;
             // 
@@ -75,7 +73,7 @@
             // 
             // lblTotal
             // 
-            lblTotal.Location = new Point(438, 375);
+            lblTotal.Location = new Point(430, 350);
             lblTotal.Name = "lblTotal";
             lblTotal.Size = new Size(150, 20);
             lblTotal.TabIndex = 4;
@@ -83,7 +81,7 @@
             // 
             // btnAgregar
             // 
-            btnAgregar.Location = new Point(44, 370);
+            btnAgregar.Location = new Point(122, 350);
             btnAgregar.Name = "btnAgregar";
             btnAgregar.Size = new Size(75, 30);
             btnAgregar.TabIndex = 5;
@@ -92,7 +90,7 @@
             // 
             // btnQuitar
             // 
-            btnQuitar.Location = new Point(141, 370);
+            btnQuitar.Location = new Point(219, 350);
             btnQuitar.Name = "btnQuitar";
             btnQuitar.Size = new Size(75, 30);
             btnQuitar.TabIndex = 6;
@@ -101,44 +99,24 @@
             // 
             // btnFinalizar
             // 
-            btnFinalizar.Location = new Point(234, 370);
+            btnFinalizar.Location = new Point(312, 350);
             btnFinalizar.Name = "btnFinalizar";
             btnFinalizar.Size = new Size(100, 30);
             btnFinalizar.TabIndex = 7;
             btnFinalizar.Text = "Guardar";
             btnFinalizar.Click += btnGuardar_Click;
             // 
-            // cmbModo
+            // comboBox1
             // 
-            cmbModo.Items.AddRange(new object[] { "Facturacion", "Historial de Compra" });
-            cmbModo.Location = new Point(161, 6);
-            cmbModo.Name = "cmbModo";
-            cmbModo.Size = new Size(124, 23);
-            cmbModo.TabIndex = 8;
-            // 
-            // lblCuentas
-            // 
-            lblCuentas.Location = new Point(20, 42);
-            lblCuentas.Name = "lblCuentas";
-            lblCuentas.Size = new Size(150, 20);
-            lblCuentas.TabIndex = 9;
-            lblCuentas.Text = "Historial de Cuentas";
-            lblCuentas.Click += label1_Click;
-            // 
-            // label2
-            // 
-            label2.Location = new Point(438, 42);
-            label2.Name = "label2";
-            label2.Size = new Size(150, 20);
-            label2.TabIndex = 10;
-            label2.Text = "Productos";
+            comboBox1.Location = new Point(218, 6);
+            comboBox1.Name = "comboBox1";
+            comboBox1.Size = new Size(124, 28);
+            comboBox1.TabIndex = 8;
             // 
             // frmVentas
             // 
             ClientSize = new Size(850, 400);
-            Controls.Add(label2);
-            Controls.Add(lblCuentas);
-            Controls.Add(cmbModo);
+            Controls.Add(comboBox1);
             Controls.Add(dgvProductos);
             Controls.Add(dgvVenta);
             Controls.Add(cmbClientes);
@@ -154,8 +132,6 @@
             ResumeLayout(false);
         }
 
-        private ComboBox cmbModo;
-        private Label lblCuentas;
-        private Label label2;
+        private ComboBox comboBox1;
     }
 }
