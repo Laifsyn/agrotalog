@@ -4,10 +4,9 @@
     {
         private System.ComponentModel.IContainer components = null;
         private System.Windows.Forms.DataGridView dgvInventario;
-        private System.Windows.Forms.TextBox txtProducto;
+        private System.Windows.Forms.TextBox txtProductoId;
         private System.Windows.Forms.TextBox txtCantidad;
-        private System.Windows.Forms.ComboBox cmbTipoMovimiento;
-        private System.Windows.Forms.Label lblProducto;
+        private System.Windows.Forms.Label lblProductoId;
         private System.Windows.Forms.Label lblCantidad;
         private System.Windows.Forms.Label lblTipo;
         private System.Windows.Forms.Button btnRegistrar;
@@ -24,70 +23,111 @@
 
         private void InitializeComponent()
         {
-            this.dgvInventario = new System.Windows.Forms.DataGridView();
-            this.txtProducto = new System.Windows.Forms.TextBox();
-            this.txtCantidad = new System.Windows.Forms.TextBox();
-            this.cmbTipoMovimiento = new System.Windows.Forms.ComboBox();
-            this.lblProducto = new System.Windows.Forms.Label();
-            this.lblCantidad = new System.Windows.Forms.Label();
-            this.lblTipo = new System.Windows.Forms.Label();
-            this.btnRegistrar = new System.Windows.Forms.Button();
-            this.btnActualizar = new System.Windows.Forms.Button();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvInventario)).BeginInit();
-            this.SuspendLayout();
+            dgvInventario = new DataGridView();
+            txtProductoId = new TextBox();
+            txtCantidad = new TextBox();
+            lblProductoId = new Label();
+            lblCantidad = new Label();
+            lblTipo = new Label();
+            btnRegistrar = new Button();
+            btnActualizar = new Button();
+            txtStockMinimo = new TextBox();
+            ((System.ComponentModel.ISupportInitialize)dgvInventario).BeginInit();
+            SuspendLayout();
+            // 
             // dgvInventario
-            this.dgvInventario.Location = new System.Drawing.Point(12, 12);
-            this.dgvInventario.Size = new System.Drawing.Size(500, 300);
-            this.dgvInventario.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvInventario.MultiSelect = false;
-            // txtProducto
-            this.txtProducto.Location = new System.Drawing.Point(580, 40);
-            this.txtProducto.Size = new System.Drawing.Size(200, 22);
+            // 
+            dgvInventario.Location = new Point(12, 12);
+            dgvInventario.MultiSelect = false;
+            dgvInventario.Name = "dgvInventario";
+            dgvInventario.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            dgvInventario.Size = new Size(453, 300);
+            dgvInventario.TabIndex = 0;
+            // 
+            // txtProductoId
+            // 
+            txtProductoId.Location = new Point(557, 35);
+            txtProductoId.Name = "txtProductoId";
+            txtProductoId.Size = new Size(200, 23);
+            txtProductoId.TabIndex = 1;
+            txtProductoId.TextChanged += txtProductoId_TextChanged;
+            // 
             // txtCantidad
-            this.txtCantidad.Location = new System.Drawing.Point(580, 70);
-            this.txtCantidad.Size = new System.Drawing.Size(100, 22);
-            // cmbTipoMovimiento
-            this.cmbTipoMovimiento.Location = new System.Drawing.Point(580, 100);
-            this.cmbTipoMovimiento.Size = new System.Drawing.Size(120, 24);
-            this.cmbTipoMovimiento.Items.AddRange(new object[] { "Entrada", "Salida" });
-            // lblProducto
-            this.lblProducto.Location = new System.Drawing.Point(520, 40);
-            this.lblProducto.Size = new System.Drawing.Size(60, 20);
-            this.lblProducto.Text = "Producto:";
+            // 
+            txtCantidad.Location = new Point(557, 64);
+            txtCantidad.Name = "txtCantidad";
+            txtCantidad.Size = new Size(100, 23);
+            txtCantidad.TabIndex = 2;
+            txtCantidad.TextChanged += txtCantidad_TextChanged;
+            // 
+            // lblProductoId
+            // 
+            lblProductoId.Location = new Point(483, 37);
+            lblProductoId.Name = "lblProductoId";
+            lblProductoId.Size = new Size(60, 20);
+            lblProductoId.TabIndex = 4;
+            lblProductoId.Text = "Producto Id:";
+            // 
             // lblCantidad
-            this.lblCantidad.Location = new System.Drawing.Point(520, 70);
-            this.lblCantidad.Size = new System.Drawing.Size(60, 20);
-            this.lblCantidad.Text = "Cantidad:";
+            // 
+            lblCantidad.Location = new Point(483, 67);
+            lblCantidad.Name = "lblCantidad";
+            lblCantidad.Size = new Size(60, 20);
+            lblCantidad.TabIndex = 5;
+            lblCantidad.Text = "Cantidad:";
+            // 
             // lblTipo
-            this.lblTipo.Location = new System.Drawing.Point(520, 100);
-            this.lblTipo.Size = new System.Drawing.Size(60, 20);
-            this.lblTipo.Text = "Tipo:";
+            // 
+            lblTipo.Location = new Point(483, 97);
+            lblTipo.Name = "lblTipo";
+            lblTipo.Size = new Size(60, 20);
+            lblTipo.TabIndex = 6;
+            lblTipo.Text = "Stock Mínimo:";
+            // 
             // btnRegistrar
-            this.btnRegistrar.Location = new System.Drawing.Point(580, 140);
-            this.btnRegistrar.Size = new System.Drawing.Size(75, 30);
-            this.btnRegistrar.Text = "Registrar";
-            this.btnRegistrar.Click += new System.EventHandler(this.btnRegistrar_Click);
+            // 
+            btnRegistrar.Location = new Point(549, 137);
+            btnRegistrar.Name = "btnRegistrar";
+            btnRegistrar.Size = new Size(75, 30);
+            btnRegistrar.TabIndex = 7;
+            btnRegistrar.Text = "Registrar";
+            btnRegistrar.Click += btnRegistrar_Click;
+            // 
             // btnActualizar
-            this.btnActualizar.Location = new System.Drawing.Point(665, 140);
-            this.btnActualizar.Size = new System.Drawing.Size(75, 30);
-            this.btnActualizar.Text = "Actualizar";
-            this.btnActualizar.Click += new System.EventHandler(this.btnActualizar_Click);
+            // 
+            btnActualizar.Location = new Point(634, 137);
+            btnActualizar.Name = "btnActualizar";
+            btnActualizar.Size = new Size(75, 30);
+            btnActualizar.TabIndex = 8;
+            btnActualizar.Text = "Actualizar";
+            btnActualizar.Click += btnActualizar_Click;
+            // 
+            // txtStockMinimo
+            // 
+            txtStockMinimo.Location = new Point(557, 93);
+            txtStockMinimo.Name = "txtStockMinimo";
+            txtStockMinimo.Size = new Size(100, 23);
+            txtStockMinimo.TabIndex = 9;
+            txtStockMinimo.TextChanged += txtStockMinimo_TextChanged;
+            // 
             // frmInventario
-            this.ClientSize = new System.Drawing.Size(800, 330);
-            this.Controls.Add(this.dgvInventario);
-            this.Controls.Add(this.txtProducto);
-            this.Controls.Add(this.txtCantidad);
-            this.Controls.Add(this.cmbTipoMovimiento);
-            this.Controls.Add(this.lblProducto);
-            this.Controls.Add(this.lblCantidad);
-            this.Controls.Add(this.lblTipo);
-            this.Controls.Add(this.btnRegistrar);
-            this.Controls.Add(this.btnActualizar);
-            this.Name = "frmInventario";
-            this.Text = "Inventario";
-            ((System.ComponentModel.ISupportInitialize)(this.dgvInventario)).EndInit();
-            this.ResumeLayout(false);
-            this.PerformLayout();
+            // 
+            ClientSize = new Size(800, 330);
+            Controls.Add(txtStockMinimo);
+            Controls.Add(dgvInventario);
+            Controls.Add(txtProductoId);
+            Controls.Add(txtCantidad);
+            Controls.Add(lblProductoId);
+            Controls.Add(lblCantidad);
+            Controls.Add(lblTipo);
+            Controls.Add(btnRegistrar);
+            Controls.Add(btnActualizar);
+            Name = "frmInventario";
+            Text = "Inventario";
+            ((System.ComponentModel.ISupportInitialize)dgvInventario).EndInit();
+            ResumeLayout(false);
+            PerformLayout();
         }
+        private TextBox txtStockMinimo;
     }
 }
