@@ -232,5 +232,12 @@ namespace proyFinalAgropecuaria
             return dt;
         }
 
+        // Crea y devuelve una nueva conexión sin abrir a la base de datos
+        public SqliteConnection new_connection()
+        {
+            var conn = new SqliteConnection($"Data Source={connectionDB}");
+            return conn;
+        }
+
     }
 }
