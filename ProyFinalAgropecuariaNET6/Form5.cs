@@ -813,10 +813,10 @@ namespace CompraVenta
             // Retrieve product name
             command.Parameters.Clear();
             command.CommandText = "SELECT Nombre, Descripcion FROM Productos where Id=$prodId";
-            command.Parameters.AddWithValue("$prodId", itemId);
+            command.Parameters.AddWithValue("$prodId", productId);
             reader = command.ExecuteReader();
             if (!reader.Read())
-                return new Result<Optional<FacturaItem>>(new DataException($"El producto con Id `{itemId}` no existe en la base de datos"));
+                return new Result<Optional<FacturaItem>>(new DataException($"El producto con Id `{productId}` no existe en la base de datos"));
             string productName = reader.GetString("Nombre");
             reader.Close();
 

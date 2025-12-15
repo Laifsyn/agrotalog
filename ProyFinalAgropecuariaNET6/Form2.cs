@@ -98,16 +98,6 @@ namespace proyFinalAgropecuaria
         // 3️⃣ Guardar el producto
         private void btnGuardar_Click(object sender, EventArgs e)
         {
-            //if (string.IsNullOrWhiteSpace(txtNombre.Text) ||
-            //    string.IsNullOrWhiteSpace(txtDescripcion.Text) ||
-            //    string.IsNullOrWhiteSpace(txtPrecio.Text) ||
-            //    string.IsNullOrWhiteSpace(txtStock.Text) ||
-            //    string.IsNullOrWhiteSpace(txtUnidad.Text))
-            //{
-            //    MessageBox.Show("Por favor, complete todos los campos", "Error",
-            //                    MessageBoxButtons.OK, MessageBoxIcon.Error);
-            //    return;
-            //}
             if(btnGuardar.Text == "Actualizar")
             {
                 BDAgro bd = BDAgro.FromStatic();

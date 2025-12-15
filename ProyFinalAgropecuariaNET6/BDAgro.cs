@@ -165,12 +165,12 @@ namespace proyFinalAgropecuaria
             using var cmd = conn.CreateCommand();
             cmd.CommandText = sql;
 
-            cmd.Parameters.Clear(); // Limpiar parámetros antes de agregar los nuevos
+            cmd.Parameters.Clear(); 
 
             foreach (var (nombre, valor) in parametros)
             {
                 cmd.Parameters.AddWithValue(nombre, valor);
-                Console.WriteLine($"Parámetro: {nombre} = {valor}");  // Debugging
+                Console.WriteLine($"Parámetro: {nombre} = {valor}");  
             }
 
             try
