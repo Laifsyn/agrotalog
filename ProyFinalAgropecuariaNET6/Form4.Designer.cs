@@ -67,7 +67,7 @@
             dgvProveedores.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dgvProveedores.Size = new Size(829, 573);
             dgvProveedores.TabIndex = 0;
-            dgvProveedores.CellClick += dgvProductos_CellClick;
+            dgvProveedores.CellClick += dgvProveedores_CellClick;
             // 
             // txtId
             // 

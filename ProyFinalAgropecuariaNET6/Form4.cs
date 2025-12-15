@@ -88,7 +88,7 @@ namespace proyFinalAgropecuaria
         {
             txtId.Text = "";
             txtNombre.Text = "";
-            txtTelefono.Text = ""; 
+            txtTelefono.Text = "";
             txtEmail.Text = "";
             txtDireccion.Text = "";
             btnGuardar.Text = "Guardar";
@@ -163,7 +163,7 @@ namespace proyFinalAgropecuaria
             dgvProveedores.AllowUserToAddRows = false;
             dgvProveedores.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
         }
-        private void dgvProductos_CellClick(object sender, DataGridViewCellEventArgs e)
+        private void dgvProveedores_CellClick(object sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex >= 0)
             {
