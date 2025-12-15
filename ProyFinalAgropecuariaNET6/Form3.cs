@@ -119,7 +119,7 @@ namespace proyFinalAgropecuaria
 
             if (btnGuardar.Text == "Actualizar")
             {
-               sql = @"UPDATE Clientes 
+                sql = @"UPDATE Clientes 
                SET nombre = $nombre,
                    direccion = $direccion,
                    telefono = $telefono,
@@ -254,6 +254,11 @@ namespace proyFinalAgropecuaria
                 cmbTipoCliente.Text = dgvClientes.Rows[e.RowIndex].Cells["TipoCliente"].Value.ToString();
                 btnGuardar.Text = "Actualizar";
             }
+        }
+
+        private void txtEmail_TextChanged(object sender, EventArgs e)
+        {
+
         }
     }
 

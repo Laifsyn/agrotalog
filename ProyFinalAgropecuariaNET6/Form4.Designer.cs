@@ -39,85 +39,109 @@
             // 
             // dgvProveedores
             // 
-            dgvProveedores.ColumnHeadersHeight = 29;
+            dgvProveedores.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            dgvProveedores.DefaultCellStyle.Font = new Font("Segoe UI", 12F, FontStyle.Regular);
+            dgvProveedores.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
+            dgvProveedores.RowTemplate.Height = 35;
+            dgvProveedores.ColumnHeadersHeight = 35;
             dgvProveedores.Location = new Point(12, 12);
             dgvProveedores.MultiSelect = false;
             dgvProveedores.Name = "dgvProveedores";
             dgvProveedores.RowHeadersWidth = 51;
             dgvProveedores.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvProveedores.Size = new Size(550, 300);
+            dgvProveedores.Size = new Size(829, 573);
             dgvProveedores.TabIndex = 0;
             // 
             // txtId
             // 
-            txtId.Location = new Point(580, 12);
+            txtId.Font = new Font("Segoe UI", 12F);
+            txtId.Location = new Point(866, 4);
             txtId.Name = "txtId";
             txtId.ReadOnly = true;
-            txtId.Size = new Size(100, 27);
+            txtId.Size = new Size(100, 34);
             txtId.TabIndex = 1;
+            txtId.Visible = false;
             // 
             // txtNombre
             // 
-            txtNombre.Location = new Point(580, 61);
+            txtNombre.Font = new Font("Segoe UI", 12F);
+            txtNombre.Location = new Point(866, 53);
+            txtNombre.Multiline = true;
             txtNombre.Name = "txtNombre";
-            txtNombre.Size = new Size(220, 27);
+            txtNombre.Size = new Size(297, 45);
             txtNombre.TabIndex = 2;
             // 
             // txtTelefono
             // 
-            txtTelefono.Location = new Point(580, 112);
+            txtTelefono.Font = new Font("Segoe UI", 12F);
+            txtTelefono.Location = new Point(865, 148);
+            txtTelefono.Multiline = true;
             txtTelefono.Name = "txtTelefono";
-            txtTelefono.Size = new Size(220, 27);
+            txtTelefono.Size = new Size(297, 45);
             txtTelefono.TabIndex = 4;
             // 
             // txtEmail
             // 
-            txtEmail.Location = new Point(580, 162);
+            txtEmail.Font = new Font("Segoe UI", 12F);
+            txtEmail.Location = new Point(865, 250);
+            txtEmail.Multiline = true;
             txtEmail.Name = "txtEmail";
-            txtEmail.Size = new Size(220, 27);
+            txtEmail.Size = new Size(297, 45);
             txtEmail.TabIndex = 5;
             // 
             // txtDireccion
             // 
-            txtDireccion.Location = new Point(580, 214);
+            txtDireccion.Font = new Font("Segoe UI", 12F);
+            txtDireccion.Location = new Point(866, 351);
+            txtDireccion.Multiline = true;
             txtDireccion.Name = "txtDireccion";
-            txtDireccion.Size = new Size(220, 27);
+            txtDireccion.Size = new Size(297, 45);
             txtDireccion.TabIndex = 6;
             // 
             // btnNuevo
             // 
-            btnNuevo.Location = new Point(580, 283);
+            btnNuevo.BackColor = Color.FromArgb(192, 255, 192);
+            btnNuevo.Font = new Font("Segoe UI", 12F);
+            btnNuevo.Location = new Point(865, 512);
             btnNuevo.Name = "btnNuevo";
-            btnNuevo.Size = new Size(75, 30);
+            btnNuevo.Size = new Size(135, 42);
             btnNuevo.TabIndex = 7;
             btnNuevo.Text = "Nuevo";
+            btnNuevo.UseVisualStyleBackColor = false;
             btnNuevo.Click += btnNuevo_Click;
             // 
             // btnGuardar
             // 
-            btnGuardar.Location = new Point(665, 283);
+            btnGuardar.BackColor = Color.FromArgb(255, 255, 192);
+            btnGuardar.Font = new Font("Segoe UI", 12F);
+            btnGuardar.Location = new Point(865, 439);
             btnGuardar.Name = "btnGuardar";
-            btnGuardar.Size = new Size(75, 30);
+            btnGuardar.Size = new Size(297, 45);
             btnGuardar.TabIndex = 8;
             btnGuardar.Text = "Guardar";
+            btnGuardar.UseVisualStyleBackColor = false;
             btnGuardar.Click += btnGuardar_Click;
             // 
             // btnEliminar
             // 
-            btnEliminar.Location = new Point(750, 283);
+            btnEliminar.BackColor = Color.FromArgb(255, 192, 192);
+            btnEliminar.Font = new Font("Segoe UI", 12F);
+            btnEliminar.Location = new Point(1027, 512);
             btnEliminar.Name = "btnEliminar";
-            btnEliminar.Size = new Size(75, 30);
+            btnEliminar.Size = new Size(135, 42);
             btnEliminar.TabIndex = 9;
             btnEliminar.Text = "Eliminar";
+            btnEliminar.UseVisualStyleBackColor = false;
             btnEliminar.Click += btnEliminar_Click;
             // 
             // label1
             // 
             label1.AutoSize = true;
             label1.BackColor = Color.Transparent;
-            label1.Location = new Point(580, 39);
+            label1.Font = new Font("Segoe UI", 12F);
+            label1.Location = new Point(866, 22);
             label1.Name = "label1";
-            label1.Size = new Size(64, 20);
+            label1.Size = new Size(85, 28);
             label1.TabIndex = 12;
             label1.Text = "Nombre";
             // 
@@ -125,9 +149,10 @@
             // 
             label2.AutoSize = true;
             label2.BackColor = Color.Transparent;
-            label2.Location = new Point(580, 92);
+            label2.Font = new Font("Segoe UI", 12F);
+            label2.Location = new Point(865, 117);
             label2.Name = "label2";
-            label2.Size = new Size(67, 20);
+            label2.Size = new Size(86, 28);
             label2.TabIndex = 13;
             label2.Text = "Telefono";
             // 
@@ -135,9 +160,10 @@
             // 
             label3.AutoSize = true;
             label3.BackColor = Color.Transparent;
-            label3.Location = new Point(580, 142);
+            label3.Font = new Font("Segoe UI", 12F);
+            label3.Location = new Point(865, 219);
             label3.Name = "label3";
-            label3.Size = new Size(46, 20);
+            label3.Size = new Size(59, 28);
             label3.TabIndex = 14;
             label3.Text = "Email";
             // 
@@ -145,15 +171,16 @@
             // 
             label4.AutoSize = true;
             label4.BackColor = Color.Transparent;
-            label4.Location = new Point(580, 191);
+            label4.Font = new Font("Segoe UI", 12F);
+            label4.Location = new Point(866, 320);
             label4.Name = "label4";
-            label4.Size = new Size(72, 20);
+            label4.Size = new Size(94, 28);
             label4.TabIndex = 15;
             label4.Text = "Direccion";
             // 
             // frmProveedores
             // 
-            ClientSize = new Size(840, 330);
+            ClientSize = new Size(1232, 734);
             Controls.Add(label4);
             Controls.Add(label3);
             Controls.Add(label2);

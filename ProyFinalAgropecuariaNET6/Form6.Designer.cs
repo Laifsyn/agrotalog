@@ -37,84 +37,103 @@
             // 
             // dgvInventario
             // 
+            dgvInventario.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            dgvInventario.DefaultCellStyle.Font = new Font("Segoe UI", 10F, FontStyle.Regular);
+            dgvInventario.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
+            dgvInventario.RowTemplate.Height = 35;
+            dgvInventario.ColumnHeadersHeight = 35;
             dgvInventario.Location = new Point(12, 12);
             dgvInventario.MultiSelect = false;
             dgvInventario.Name = "dgvInventario";
+            dgvInventario.RowHeadersWidth = 51;
             dgvInventario.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvInventario.Size = new Size(453, 300);
+            dgvInventario.Size = new Size(698, 519);
             dgvInventario.TabIndex = 0;
-            dgvInventario.CellClick += dgvInventario_CellClick;
-            dgvInventario.CellContentClick += dgvInventario_CellContentClick;
             // 
             // txtProductoId
             // 
-            txtProductoId.Location = new Point(572, 36);
+            txtProductoId.Font = new Font("Segoe UI", 12F);
+            txtProductoId.Location = new Point(735, 59);
+            txtProductoId.Multiline = true;
             txtProductoId.Name = "txtProductoId";
-            txtProductoId.Size = new Size(200, 23);
+            txtProductoId.Size = new Size(294, 45);
             txtProductoId.TabIndex = 1;
             txtProductoId.TextChanged += txtProductoId_TextChanged;
             // 
             // txtCantidad
             // 
-            txtCantidad.Location = new Point(572, 65);
+            txtCantidad.Font = new Font("Segoe UI", 12F);
+            txtCantidad.Location = new Point(735, 160);
+            txtCantidad.Multiline = true;
             txtCantidad.Name = "txtCantidad";
-            txtCantidad.Size = new Size(100, 23);
+            txtCantidad.Size = new Size(294, 45);
             txtCantidad.TabIndex = 2;
             txtCantidad.TextChanged += txtCantidad_TextChanged;
             // 
             // lblProductoId
             // 
-            lblProductoId.Location = new Point(483, 37);
+            lblProductoId.Font = new Font("Segoe UI", 12F);
+            lblProductoId.Location = new Point(735, 24);
             lblProductoId.Name = "lblProductoId";
-            lblProductoId.Size = new Size(60, 20);
+            lblProductoId.Size = new Size(200, 32);
             lblProductoId.TabIndex = 4;
             lblProductoId.Text = "Producto Id:";
             // 
             // lblCantidad
             // 
-            lblCantidad.Location = new Point(483, 67);
+            lblCantidad.Font = new Font("Segoe UI", 12F);
+            lblCantidad.Location = new Point(735, 125);
             lblCantidad.Name = "lblCantidad";
-            lblCantidad.Size = new Size(60, 20);
+            lblCantidad.Size = new Size(184, 45);
             lblCantidad.TabIndex = 5;
             lblCantidad.Text = "Cantidad:";
             // 
             // lblTipo
             // 
-            lblTipo.Location = new Point(483, 97);
+            lblTipo.Font = new Font("Segoe UI", 12F);
+            lblTipo.Location = new Point(735, 225);
             lblTipo.Name = "lblTipo";
-            lblTipo.Size = new Size(98, 20);
+            lblTipo.Size = new Size(214, 31);
             lblTipo.TabIndex = 6;
             lblTipo.Text = "Stock Mínimo:";
             // 
             // btnRegistrar
             // 
-            btnRegistrar.Location = new Point(549, 137);
+            btnRegistrar.BackColor = Color.FromArgb(192, 192, 255);
+            btnRegistrar.Font = new Font("Segoe UI", 12F);
+            btnRegistrar.Location = new Point(735, 362);
             btnRegistrar.Name = "btnRegistrar";
-            btnRegistrar.Size = new Size(75, 30);
+            btnRegistrar.Size = new Size(294, 45);
             btnRegistrar.TabIndex = 7;
             btnRegistrar.Text = "Registrar";
+            btnRegistrar.UseVisualStyleBackColor = false;
             btnRegistrar.Click += btnRegistrar_Click;
             // 
             // btnActualizar
             // 
-            btnActualizar.Location = new Point(634, 137);
+            btnActualizar.BackColor = Color.FromArgb(255, 255, 192);
+            btnActualizar.Font = new Font("Segoe UI", 12F);
+            btnActualizar.Location = new Point(735, 423);
             btnActualizar.Name = "btnActualizar";
-            btnActualizar.Size = new Size(75, 30);
+            btnActualizar.Size = new Size(294, 45);
             btnActualizar.TabIndex = 8;
             btnActualizar.Text = "Actualizar";
+            btnActualizar.UseVisualStyleBackColor = false;
             btnActualizar.Click += btnActualizar_Click;
             // 
             // txtStockMinimo
             // 
-            txtStockMinimo.Location = new Point(572, 94);
+            txtStockMinimo.Font = new Font("Segoe UI", 12F);
+            txtStockMinimo.Location = new Point(735, 259);
+            txtStockMinimo.Multiline = true;
             txtStockMinimo.Name = "txtStockMinimo";
-            txtStockMinimo.Size = new Size(100, 23);
+            txtStockMinimo.Size = new Size(294, 45);
             txtStockMinimo.TabIndex = 9;
             txtStockMinimo.TextChanged += txtStockMinimo_TextChanged;
             // 
             // frmInventario
             // 
-            ClientSize = new Size(800, 330);
+            ClientSize = new Size(1215, 630);
             Controls.Add(txtStockMinimo);
             Controls.Add(dgvInventario);
             Controls.Add(txtProductoId);
