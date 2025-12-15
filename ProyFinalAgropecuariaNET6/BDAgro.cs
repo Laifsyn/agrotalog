@@ -165,16 +165,26 @@ namespace proyFinalAgropecuaria
             using var cmd = conn.CreateCommand();
             cmd.CommandText = sql;
 
+            cmd.Parameters.Clear(); // Limpiar parámetros antes de agregar los nuevos
+
             foreach (var (nombre, valor) in parametros)
             {
                 cmd.Parameters.AddWithValue(nombre, valor);
+                Console.WriteLine($"Parámetro: {nombre} = {valor}");  // Debugging
             }
 
-            int filasAfectadas = cmd.ExecuteNonQuery();
-            conn.Close();
-
-            return filasAfectadas > 0; // true si afectó filas, false si no
+            try
+            {
+                int filasAfectadas = cmd.ExecuteNonQuery();
+                return filasAfectadas > 0;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al ejecutar el comando: {ex.Message}");
+                return false;
+            }
         }
+
 
         public DataTable EjecutarConsulta(string sql)
         {

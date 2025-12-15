@@ -1,5 +1,6 @@
 ﻿using DotNext;
 using System.Data;
+using System.Windows.Forms;
 
 namespace proyFinalAgropecuaria
 {
@@ -177,30 +178,36 @@ namespace proyFinalAgropecuaria
         // 5️⃣ Eliminar producto
         private void btnEliminar_Click(object sender, EventArgs e)
         {
-            string sql = "DELETE FROM Productos WHERE Id=$id";
-
-            if (!int.TryParse(txtId.Text, out int idProducto))
+            if (int.TryParse(txtId.Text, out int id))
             {
-                MessageBox.Show("Ingrese un ID válido.", "Error",
-                                MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-
-            BDAgro bd = new BDAgro();
-
-            bool eliminado = bd.EjecutarComandoConResultado(sql, ("$id", idProducto));
-
-            if (eliminado)
-            {
-                MessageBox.Show("Producto eliminado correctamente.");
-                CargarProductos();
+                bool eliminado = EliminarProducto(id);
+                if (eliminado)
+                {
+                    MessageBox.Show("Proveedor eliminado correctamente.");
+                    CargarProductos();
+                }
+                else
+                {
+                    MessageBox.Show("No se encontró el proveedor o no se pudo eliminar.");
+                }
             }
             else
             {
-                MessageBox.Show("No se encontró el ID. Ingrese un ID válido.");
+                MessageBox.Show("ID de proveedor inválido.");
             }
         }
 
+        private BDAgro db()
+        {
+            BDAgro bd = BDAgro.FromStatic();
+            return bd;
+        }
+
+        public bool EliminarProducto(int id)
+        {
+            string sql = "DELETE FROM Productos WHERE Id = $id";
+            return db().EjecutarComandoConResultado(sql, ("$id", id));
+        }
 
         private void frmProductos_Load(object sender, EventArgs e)
         {
