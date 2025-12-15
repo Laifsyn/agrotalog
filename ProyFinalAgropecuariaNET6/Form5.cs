@@ -14,29 +14,19 @@ namespace proyFinalAgropecuaria
         private BindingList<DetalleVenta> ventas = new();
         private BindingList<ClientHistory> clients;
         private BindingList<ProviderHistory> providers;
+        private BDAgro db = BDAgro.FromStatic();
+        private int? selectedItemId;
         /// <summary>
         /// Binds the list type for Compras and Ventas
         /// </summary>
-        private ReceiptKind selectedReceiptKind = ReceiptKind.Venta;
+        private ReceiptKind selectedReceiptKind = ReceiptKind.Compra;
         public frmVentas()
         {
             InitializeComponent();
-            this.selectedReceiptKind= ReceiptKind.Venta;
-
+            this.cmbReceiptKind.SelectedIndex = 0; // Set Default to first item
+            this.cmbReceiptKind_SelectedIndexChanged(this, EventArgs.Empty);
             this.dgvVentas.AutoGenerateColumns = false;
-            this.dgvVentas.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                Name = "colVentaId",
-                HeaderText = "ID",
-                DataPropertyName = "ventaId"
-            });
-
-            this.dgvVentas.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                Name = "colFecha",
-                HeaderText = "Fecha",
-                DataPropertyName = "fecha"
-            });
+            this.LoadDgvVentasColumns();
 
 
             // For dgvItems
@@ -45,7 +35,7 @@ namespace proyFinalAgropecuaria
             this.dgvItems.Columns.Add(new DataGridViewTextBoxColumn
             {
                 Name = "colId",
-                HeaderText = "IdProducto",
+                HeaderText = "Item Id",
                 DataPropertyName = "id"
             });
 
@@ -76,38 +66,128 @@ namespace proyFinalAgropecuaria
                 HeaderText = "Producto Id",
                 DataPropertyName = "productId"
             });
-            Result<List<ClientHistory>> clientsResult = ClientHistory.Load(BDAgro.FromStatic().new_connection());
+
+
+
+            Result<List<ClientHistory>> clientsResult = ClientHistory.Load(this.db.new_connection());
 
             if (!clientsResult.IsSuccessful)
             {
                 MessageBox.Show($"Error loading clients: {clientsResult.Error.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 this.clients = new();
+            }
+            else
+                this.clients = new(clientsResult.Value);
+
+            Result<List<ProviderHistory>> providersResult = ProviderHistory.LoadFromConn(this.db.new_connection());
+            if (!providersResult.IsSuccessful)
+            {
+                MessageBox.Show($"Error loading providers: {providersResult.Error.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                this.providers = new();
                 return;
             }
+            else
+                this.providers = new(providersResult.Value);
 
-            this.clients = new BindingList<ClientHistory>(clientsResult.Value);
+
             this.listClientes.DataSource = this.clients;
             this.listClientes.DisplayMember = "nombre";
             this.listClientes.ValueMember = "clientId";
         }
 
+        void LoadDgvVentasColumns()
+        {
+            this.dgvVentas.Columns.Clear();
+
+            switch (this.selectedReceiptKind)
+            {
+                case ReceiptKind.Venta:
+                    this.dgvVentas.Columns.Add(new DataGridViewTextBoxColumn
+                    {
+                        Name = "colVentaId",
+                        HeaderText = "ID Venta",
+                        DataPropertyName = "ventaId"
+                    });
+                    break;
+                case ReceiptKind.Compra:
+                    this.dgvVentas.Columns.Add(new DataGridViewTextBoxColumn
+                    {
+                        Name = "colCompraId",
+                        HeaderText = "ID Compra",
+                        DataPropertyName = "compraId"
+                    });
+                    break;
+            }
+
+            this.dgvVentas.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                Name = "colFecha",
+                HeaderText = "Fecha",
+                DataPropertyName = "fecha"
+            });
+
+            this.dgvVentas.Refresh();
+        }
+
         private void listClientes_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (this.listClientes.SelectedItem is null) return;
-            ClientHistory selectedClient = (ClientHistory)this.listClientes.SelectedItem;
-            this.dgvVentas.DataSource = selectedClient.facturas;
+            switch (this.selectedReceiptKind)
+            {
+                case ReceiptKind.Compra:
+                    ProviderHistory selectedProvider = (ProviderHistory)this.listClientes.SelectedItem;
+                    this.dgvVentas.DataSource = selectedProvider.facturas;
+                    break;
+                case ReceiptKind.Venta:
+                    ClientHistory selectedClient = (ClientHistory)this.listClientes.SelectedItem;
+                    this.dgvVentas.DataSource = selectedClient.facturas;
+                    break;
+            }
             this.dgvVentas.Refresh();
+
         }
 
         private void dgvVentas_SelectionChanged(object sender, EventArgs e)
         {
             if (this.dgvVentas.SelectedRows.Count > 0)
             {
-                DataGridViewRow selectedRow = this.dgvVentas.SelectedRows[0];
 
-                DetalleVenta selectedVenta = (DetalleVenta)selectedRow.DataBoundItem;
-                this.dgvItems.DataSource = selectedVenta.listaProductos;
+                DataGridViewRow selectedRow = this.dgvVentas.SelectedRows[0];
+                if (selectedRow.DataBoundItem is null) return;
+                
+                switch (this.selectedReceiptKind)
+                {
+                    case ReceiptKind.Compra:
+                        DetalleCompra selectedCompra = (DetalleCompra)selectedRow.DataBoundItem;
+                        this.dgvItems.DataSource = selectedCompra.listaProductos;
+                        break;
+                    case ReceiptKind.Venta:
+                        DetalleVenta selectedVenta = (DetalleVenta)selectedRow.DataBoundItem;
+                        this.dgvItems.DataSource = selectedVenta.listaProductos;
+                        break;
+                }
+                this.UpdateTotalLabel();
                 this.dgvItems.Refresh();
+                this.dgvItems_CellClick(this.dgvItems, new DataGridViewCellEventArgs(0, 0));
+            }
+        }
+
+        void UpdateTotalLabel()
+        {
+            if (this.dgvVentas.SelectedRows.Count == 0) return;
+            DataGridViewRow selectedRow = this.dgvVentas.SelectedRows[0];
+            if (selectedRow.DataBoundItem is null) return;
+
+            switch (this.selectedReceiptKind)
+            {
+                case ReceiptKind.Compra:
+                    DetalleCompra selectedCompra = (DetalleCompra)selectedRow.DataBoundItem;
+                    this.lblTotal.Text = $"Total: ${selectedCompra.TotalFactura().ToString("#,##0.00")}";
+                    break;
+                case ReceiptKind.Venta:
+                    DetalleVenta selectedVenta = (DetalleVenta)selectedRow.DataBoundItem;
+                    this.lblTotal.Text = $"Total: ${selectedVenta.TotalFactura().ToString("#,##0.00")}";
+                    break;
             }
         }
 
@@ -115,26 +195,406 @@ namespace proyFinalAgropecuaria
         {
 
             if (this.cmbReceiptKind.SelectedItem is null) return;
-            else if (this.cmbReceiptKind.SelectedItem.ToString() == "Ventas")
+            // Mostrar Historial de Ventas
+            else if (this.cmbReceiptKind.SelectedItem.ToString() == "Venta")
             {
                 this.selectedReceiptKind = ReceiptKind.Venta;
+                this.listClientes.DataSource = this.clients;
+                this.listClientes.DisplayMember = "nombre";
+                this.listClientes.ValueMember = "clientId";
+                this.lblSaleList.Text = "Historial de Ventas";
+                this.lblItemDetails.Text = "Detalles de la Venta";
             }
-            else if (this.cmbReceiptKind.SelectedItem.ToString() == "Compras")
+            // Mostrar Historial de Compras
+            else if (this.cmbReceiptKind.SelectedItem.ToString() == "Compra")
             {
                 this.selectedReceiptKind = ReceiptKind.Compra;
+                // Actualizar la lista de clientes a Lista de proveedores
+                this.listClientes.DataSource = this.providers;
+                this.listClientes.DisplayMember = "nombre";
+                this.listClientes.ValueMember = "providerId";
+                this.lblSaleList.Text = "Historial de Compras";
+                this.lblItemDetails.Text = "Detalles de la Compra";
+            }
+            else
+            {
+                MessageBox.Show(Text = "Tipo de recibo no válido", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            LoadDgvVentasColumns();
+            this.listClientes.Refresh();
+        }
+
+        private void btDetailsAdd_Click(object sender, EventArgs e)
+        {
+            int cantidad = int.Parse(this.txtDetailCantidad.Text);
+            int productId = int.Parse(this.txtDetailProductId.Text);
+            SqliteConnection conn = this.db.new_connection();
+            conn.Open();
+            SqliteCommand command = conn.CreateCommand();
+            command.CommandText = "SELECT Nombre, Descripcion, Precio FROM Productos where Id=$prodId";
+            command.Parameters.AddWithValue("$prodId", productId);
+            SqliteDataReader reader = command.ExecuteReader();
+            reader.Read();
+
+            string productName = reader.GetString("Nombre");
+            double precioUnitario = reader.GetDouble("Precio");
+            reader.Close();
+            command.Parameters.Clear();
+
+            // Register item to the database
+            {
+                switch (this.selectedReceiptKind)
+                {
+                    case ReceiptKind.Compra:
+                        var currentPurchase = (DetalleCompra)this.dgvVentas.SelectedRows[0].DataBoundItem;
+                        command.CommandText = "INSERT INTO DetalleCompras (ProductoId, CompraId, Cantidad, PrecioUnitario, Subtotal) VALUES ($prodId, $cantidad, $precioUnitario) RETURNING *";
+                        command.Parameters.AddWithValue("$prodId", productId);
+                        command.Parameters.AddWithValue("$compraId", currentPurchase.compraId);
+                        command.Parameters.AddWithValue("$cantidad", cantidad);
+                        command.Parameters.AddWithValue("$precioUnitario", precioUnitario);
+                        command.Parameters.AddWithValue("$subTotal", cantidad * precioUnitario);
+                        reader = command.ExecuteReader();
+                        break;
+                    case ReceiptKind.Venta:
+                        var currentSale = (DetalleVenta)this.dgvVentas.SelectedRows[0].DataBoundItem;
+                        command.CommandText = "INSERT INTO DetalleVentas (ProductoId, VentaId, Cantidad, PrecioUnitario, Subtotal) VALUES ($prodId, $ventaId, $cantidad, $precioUnitario, $subTotal) RETURNING *";
+                        command.Parameters.AddWithValue("$prodId", productId);
+                        command.Parameters.AddWithValue("$ventaId", currentSale.ventaId);
+                        command.Parameters.AddWithValue("$cantidad", cantidad);
+                        command.Parameters.AddWithValue("$precioUnitario", precioUnitario);
+                        command.Parameters.AddWithValue("$subTotal", cantidad * precioUnitario);
+                        reader = command.ExecuteReader();
+                        break;
+                }
+            }
+            // get the item's id
+            reader.Read();
+            int itemId = reader.GetInt32("Id");
+            this.selectedItemId = itemId;
+            reader.Close();
+            FacturaItem newItem = new FacturaItem
+            {
+                id = itemId,
+                productId = productId,
+                productName = productName,
+                cantidad = cantidad,
+                precioUnitario = precioUnitario,
+                type = this.selectedReceiptKind
+            };
+
+            switch (this.selectedReceiptKind)
+            {
+                case ReceiptKind.Venta:
+                    var currentVenta = (DetalleVenta)this.dgvVentas.SelectedRows[0].DataBoundItem;
+                    currentVenta.listaProductos.Add(newItem);
+                    break;
+                case ReceiptKind.Compra:
+                    var currentCompra = (DetalleCompra)this.dgvVentas.SelectedRows[0].DataBoundItem;
+                    currentCompra.listaProductos.Add(newItem);
+                    break;
             }
 
+            this.UpdateTotalLabel();
+        }
+
+
+        private void txtDetailProductId_Leave(object sender, EventArgs e)
+        {
+            if (int.TryParse(this.txtDetailProductId.Text, out int productId))
+            {
+                SqliteConnection conn = this.db.new_connection();
+                conn.Open();
+                SqliteCommand command = conn.CreateCommand();
+                command.CommandText = "SELECT count(*) FROM Productos where Id=$prodId";
+                command.Parameters.AddWithValue("$prodId", productId);
+                int count = Convert.ToInt32(command.ExecuteScalar());
+                if (count == 0)
+                {
+                    MessageBox.Show($"El producto con Id `{productId}` no existe en la base de datos", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    this.txtDetailProductId.Focus();
+                }
+
+            }
+        }
+
+        private void txtDetailCantidad_Leave(object sender, EventArgs e)
+        {
+            if (int.TryParse(this.txtDetailCantidad.Text, out int cantidad))
+            {
+                if (cantidad <= 0)
+                {
+                    MessageBox.Show("La cantidad debe ser un número positivo mayor que cero", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    this.txtDetailCantidad.Focus();
+                }
+            }
+            else
+            {
+                MessageBox.Show("La cantidad debe ser un número entero válido", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                this.txtDetailCantidad.Focus();
+            }
+        }
+
+        private void btnDetailsUpdate_Click(object sender, EventArgs e)
+        {
+            if (this.selectedItemId is null)
+            {
+                MessageBox.Show("No hay ningún ítem seleccionado para eliminar.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            int cantidad = int.Parse(this.txtDetailCantidad.Text);
+            int productId = int.Parse(this.txtDetailProductId.Text);
+            double precioUnitario = double.Parse(this.txtDetailPrecio.Text);
+            SqliteConnection conn = this.db.new_connection();
+            conn.Open();
+            SqliteCommand command = conn.CreateCommand();
+            switch (this.selectedReceiptKind)
+            {
+                case ReceiptKind.Compra:
+                    command.CommandText = "UPDATE DetalleCompras SET Cantidad=$cantidad WHERE Id=$itemId";
+                    break;
+                case ReceiptKind.Venta:
+                    command.CommandText = "UPDATE DetalleVentas SET Cantidad=$cantidad WHERE Id=$itemId";
+                    break;
+            }
+            int itemId = this.selectedItemId.Value;
+            command.Parameters.AddWithValue("$cantidad", cantidad);
+            command.Parameters.AddWithValue("$itemId", itemId);
+            int rowsAffected = command.ExecuteNonQuery();
+            if (rowsAffected == 0)
+            {
+                MessageBox.Show("No se pudo actualizar el ítem en la base de datos.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            FacturaItem itemToUpdate;
+            switch (this.selectedReceiptKind)
+            {
+                case ReceiptKind.Compra:
+                    var currentCompra = (DetalleCompra)this.dgvVentas.SelectedRows[0].DataBoundItem;
+                    itemToUpdate = currentCompra.listaProductos.First(item => item.id == itemId);
+                    itemToUpdate.cantidad = cantidad;
+
+                    if (itemToUpdate.precioUnitario != precioUnitario)
+                        MessageBox.Show("El precio unitario solo se puede modificar con la versión paga.", "Información", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    break;
+                case ReceiptKind.Venta:
+                    var currentVenta = (DetalleVenta)this.dgvVentas.SelectedRows[0].DataBoundItem;
+                    itemToUpdate = currentVenta.listaProductos.First(item => item.id == itemId);
+                    itemToUpdate.cantidad = cantidad;
+
+                    if (itemToUpdate.precioUnitario != precioUnitario)
+                        MessageBox.Show("El precio unitario solo se puede modificar con la versión paga.", "Información", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    break;
+            }
+            this.dgvItems.Refresh();
+            this.UpdateTotalLabel();
+
+
+        }
+
+        private void btDetailsDelete_Click(object sender, EventArgs e)
+        {
+            if (this.selectedItemId is null)
+            {
+                MessageBox.Show("No hay ningún ítem seleccionado para eliminar.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            SqliteConnection conn = this.db.new_connection();
+            conn.Open();
+            SqliteCommand command = conn.CreateCommand();
+            switch (this.selectedReceiptKind)
+            {
+                case ReceiptKind.Compra:
+                    command.CommandText = "DELETE FROM DetalleCompras WHERE Id=$itemId";
+                    break;
+                case ReceiptKind.Venta:
+                    command.CommandText = "DELETE FROM DetalleVentas WHERE Id=$itemId";
+                    break;
+            }
+            int itemId = this.selectedItemId.Value;
+            command.Parameters.AddWithValue("$itemId", itemId);
+            int rowsAffected = command.ExecuteNonQuery();
+            if (rowsAffected == 0)
+            {
+                MessageBox.Show($"No se pudo eliminar el ítem {itemId} de la base de datos.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            // Remove from databind
+            switch (this.selectedReceiptKind)
+            {
+                case ReceiptKind.Compra:
+                    var currentCompra = (DetalleCompra)this.dgvVentas.SelectedRows[0].DataBoundItem;
+                    var itemToRemove = currentCompra.listaProductos.First(item => item.id == itemId);
+                    if (itemToRemove != null)
+                        currentCompra.listaProductos.Remove(itemToRemove);
+                    break;
+                case ReceiptKind.Venta:
+                    var currentVenta = (DetalleVenta)this.dgvVentas.SelectedRows[0].DataBoundItem;
+                    var itemToRemoveVenta = currentVenta.listaProductos.First(item => item.id == itemId);
+                    if (itemToRemoveVenta != null)
+                        currentVenta.listaProductos.Remove(itemToRemoveVenta);
+                    break;
+            }
+            this.UpdateTotalLabel();
+
+        }
+
+        private void btnAgregarVentaCompra_Click(object sender, EventArgs e)
+        {
+            if (this.listClientes.SelectedItem is null) return;
+            // Get the current databindList for Compra/Venta
+            switch (this.selectedReceiptKind)
+            {
+                case ReceiptKind.Compra:
+                    var selectedProvider = (ProviderHistory)this.listClientes.SelectedItem;
+                    var newCompra = new DetalleCompra
+                    {
+                        compraId = 0, // Placeholder, will be set by DB
+                        fecha = DateTime.Now,
+                        listaProductos = new BindingList<FacturaItem>()
+                    };
+                    // Insert into DB
+                    {
+                        SqliteConnection conn = this.db.new_connection();
+                        conn.Open();
+                        SqliteCommand command = conn.CreateCommand();
+                        command.CommandText = "INSERT INTO Compras (ProveedorId, Fecha, Total) VALUES ($providerId, $fecha, $total) RETURNING *";
+                        command.Parameters.AddWithValue("$providerId", selectedProvider.providerId);
+                        command.Parameters.AddWithValue("$fecha", newCompra.fecha);
+                        command.Parameters.AddWithValue("$total", 0.0); // Initial total is 0.0
+                        SqliteDataReader reader = command.ExecuteReader();
+                        reader.Read();
+                        newCompra.compraId = reader.GetInt32("Id");
+                        reader.Close();
+                    }
+                    selectedProvider.facturas.Add(newCompra);
+                    break;
+                case ReceiptKind.Venta:
+                    var selectedClient = (ClientHistory)this.listClientes.SelectedItem;
+                    var newVenta = new DetalleVenta
+                    {
+                        ventaId = 0, // Placeholder, will be set by DB
+                        fecha = DateTime.Now,
+                        listaProductos = new BindingList<FacturaItem>()
+                    };
+                    // Insert into DB
+                    {
+                        SqliteConnection conn = this.db.new_connection();
+                        conn.Open();
+                        SqliteCommand command = conn.CreateCommand();
+                        command.CommandText = "INSERT INTO Ventas (ClienteId, Fecha, Total) VALUES ($clientId, $fecha, $total) RETURNING *";
+                        command.Parameters.AddWithValue("$clientId", selectedClient.clientId);
+                        command.Parameters.AddWithValue("$fecha", newVenta.fecha);
+                        command.Parameters.AddWithValue("$total", 0.0); // Initial total is 0.0
+                        SqliteDataReader reader = command.ExecuteReader();
+                        reader.Read();
+                        newVenta.ventaId = reader.GetInt32("Id");
+                        reader.Close();
+                    }
+                    selectedClient.facturas.Add(newVenta);
+                    break;
+            }
+            this.dgvVentas.Refresh();
+            this.UpdateTotalLabel();
+        }
+
+        private void btnQuitarCompraVenta_Click(object sender, EventArgs e)
+        {
+            if (this.listClientes.SelectedItem is null) return;
+            // do work on the currently selected Client/Provider Databind List
+
+            switch (this.selectedReceiptKind)
+            {
+                case ReceiptKind.Compra:
+                    var selectedProvider = (ProviderHistory)this.listClientes.SelectedItem;
+                    if (this.dgvVentas.SelectedRows.Count == 0) return;
+                    var selectedCompra = (DetalleCompra)this.dgvVentas.SelectedRows[0].DataBoundItem;
+                    // Avoid orphaning Item Details records
+                    if (selectedCompra.listaProductos.Count != 0)
+                    {
+                        MessageBox.Show("No se puede eliminar una venta que aún tiene productos asociados. Por favor, elimine primero los productos de la venta.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
+                    // Delete from DB
+                    {
+                        SqliteConnection conn = this.db.new_connection();
+                        conn.Open();
+                        SqliteCommand command = conn.CreateCommand();
+                        command.CommandText = "DELETE FROM Compras WHERE Id=$compraId";
+                        command.Parameters.AddWithValue("$compraId", selectedCompra.compraId);
+                        int rowsAffected = command.ExecuteNonQuery();
+                        if (rowsAffected == 0)
+                        {
+                            MessageBox.Show("No se pudo eliminar la compra de la base de datos.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            return;
+                        }
+                    }
+                    selectedProvider.facturas.Remove(selectedCompra);
+                    break;
+                case ReceiptKind.Venta:
+                    var selectedClient = (ClientHistory)this.listClientes.SelectedItem;
+                    if (this.dgvVentas.SelectedRows.Count == 0) return;
+                    var selectedVenta = (DetalleVenta)this.dgvVentas.SelectedRows[0].DataBoundItem;
+                    // Avoid orphaning Item Details records
+                    if (selectedVenta.listaProductos.Count != 0)
+                    {
+                        MessageBox.Show("No se puede eliminar una venta que aún tiene productos asociados. Por favor, elimine primero los productos de la venta.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
+                    // Delete from DB
+                    {
+                        SqliteConnection conn = this.db.new_connection();
+                        conn.Open();
+                        SqliteCommand command = conn.CreateCommand();
+                        command.CommandText = "DELETE FROM Ventas WHERE Id=$ventaId";
+                        command.Parameters.AddWithValue("$ventaId", selectedVenta.ventaId);
+                        int rowsAffected = command.ExecuteNonQuery();
+                        if (rowsAffected == 0)
+                        {
+                            MessageBox.Show("No se pudo eliminar la venta de la base de datos.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            return;
+                        }
+                    }
+                    selectedClient.facturas.Remove(selectedVenta);
+                    break;
+            }
+            this.dgvVentas.Refresh();
+        }
+
+        protected void dgvItems_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex >= 0)
+            {
+                DataGridViewRow selectedRow = this.dgvItems.Rows[e.RowIndex];
+                if (selectedRow.DataBoundItem is null) return;
+                FacturaItem selectedItem = (FacturaItem)selectedRow.DataBoundItem;
+                this.selectedItemId = selectedItem.id;
+                this.txtDetailCantidad.Text = selectedItem.cantidad.ToString();
+                this.txtDetailProductId.Text = selectedItem.productId.ToString();
+                this.txtDetailPrecio.Text = selectedItem.precioUnitario.ToString();
+            }
+        }
+
+        private void txtDetailPrecio_Leave(object sender, EventArgs e)
+        {
+            if (double.TryParse(this.txtDetailPrecio.Text, out double precio))
+            {
+                if (precio <= 0.0)
+                {
+                    MessageBox.Show("El precio debe ser un número positivo mayor que cero", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    this.txtDetailPrecio.Focus();
+                }
+            }
+            else
+            {
+                MessageBox.Show("El precio debe ser un número válido", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                this.txtDetailPrecio.Focus();
+            }
         }
     }
 }
 
 namespace CompraVenta
 {
-    /// <summary>
-    /// Placeholder for the Unit Type
-    /// </summary>
-    class Void { }
-
     public enum ClientKind
     {
         Minorista,
@@ -150,7 +610,7 @@ namespace CompraVenta
         public required string nombre { get; set; } = "";
         public required int clientId { get; set; }
         public required ClientKind kind;
-        public required BindingList<DetalleVenta> facturas = new();
+        public required BindingList<DetalleVenta> facturas { get; set; } = new();
 
         public static Result<List<ClientHistory>> Load(SqliteConnection conn)
         {
@@ -259,7 +719,7 @@ namespace CompraVenta
             double accumulator = 0.0;
             foreach (FacturaItem product in this.listaProductos)
                 accumulator += product.cantidad * product.precioUnitario;
-            return accumulator;
+            return ((double)decimal.Round((decimal)accumulator, 2, MidpointRounding.ToEven));
         }
 
         public static Result<Optional<DetalleVenta>> TryFromVentaId(SqliteConnection conn, int ventaId)
@@ -384,7 +844,32 @@ namespace CompraVenta
         public required string nombre { get; set; }
         public required int id { get; set; }
         public required int providerId { get; set; }
-        public required BindingList<DetalleCompra> facturas = new();
+        public required BindingList<DetalleCompra> facturas { get; set; } = new();
+
+        public static Result<List<ProviderHistory>> LoadFromConn(SqliteConnection conn)
+        {
+            conn.Open();
+            SqliteCommand command = conn.CreateCommand();
+            command.CommandText = "SELECT Id from Proveedores";
+            SqliteDataReader reader = command.ExecuteReader();
+            List<ProviderHistory> providers = new();
+            var errors = new List<Exception>();
+            while (reader.Read())
+            {
+                int providerId = reader.GetInt32("Id");
+                Result<Optional<ProviderHistory>> result = ProviderHistory.TryFromId(conn, providerId);
+                if (!result.IsSuccessful)
+                    errors.Add(result.Error);
+                else if (result.Value.HasValue)
+                    providers.Add(result.Value.Value);
+            }
+            if (errors.Count > 0)
+            {
+                var aggregatedErrors = new AggregateException("Encountered errors while coalescing a list of Providers", errors);
+                return new Result<List<ProviderHistory>>(aggregatedErrors);
+            }
+            return providers;
+        }
 
         public static Result<Optional<ProviderHistory>> TryFromId(SqliteConnection conn, int providerId)
         {
@@ -434,7 +919,7 @@ namespace CompraVenta
             }
             reader.Close();
 
-            var providerHistory = new ProviderHistory { facturas = facturas, id = id, providerId = providerId, nombre = nombre};
+            var providerHistory = new ProviderHistory { facturas = facturas, id = id, providerId = providerId, nombre = nombre };
             return Optional.Some(providerHistory);
         }
     }
@@ -489,12 +974,12 @@ namespace CompraVenta
             });
         }
 
-        public double Total()
+        public double TotalFactura()
         {
             double accumulator = 0.0;
             foreach (FacturaItem product in this.listaProductos)
                 accumulator += product.cantidad * product.precioUnitario;
-            return accumulator;
+            return ((double)decimal.Round((decimal)accumulator, 2, MidpointRounding.ToEven));
         }
     }
 }

@@ -10,7 +10,6 @@
         private System.Windows.Forms.Label lblTotal;
         private System.Windows.Forms.Button btnAgregar;
         private System.Windows.Forms.Button btnQuitar;
-        private System.Windows.Forms.Button btnFinalizar;
 
         protected override void Dispose(bool disposing)
         {
@@ -26,11 +25,20 @@
             lblTotal = new Label();
             btnAgregar = new Button();
             btnQuitar = new Button();
-            btnFinalizar = new Button();
             cmbReceiptKind = new ComboBox();
             listClientes = new ListBox();
             lblSaleList = new Label();
             lblItemDetails = new Label();
+            label1 = new Label();
+            txtDetailProductId = new TextBox();
+            txtDetailCantidad = new TextBox();
+            label2 = new Label();
+            label3 = new Label();
+            label4 = new Label();
+            txtDetailPrecio = new TextBox();
+            btnDetailsAdd = new Button();
+            btDetailsDelete = new Button();
+            btnDetailsUpdate = new Button();
             ((System.ComponentModel.ISupportInitialize)dgvItems).BeginInit();
             ((System.ComponentModel.ISupportInitialize)dgvVentas).BeginInit();
             SuspendLayout();
@@ -45,6 +53,7 @@
             dgvItems.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dgvItems.Size = new Size(540, 300);
             dgvItems.TabIndex = 0;
+            dgvItems.CellClick += dgvItems_CellClick;
             // 
             // dgvVentas
             // 
@@ -80,6 +89,7 @@
             btnAgregar.Size = new Size(76, 30);
             btnAgregar.TabIndex = 5;
             btnAgregar.Text = "Agregar";
+            btnAgregar.Click += btnAgregarVentaCompra_Click;
             // 
             // btnQuitar
             // 
@@ -88,19 +98,12 @@
             btnQuitar.Size = new Size(76, 30);
             btnQuitar.TabIndex = 6;
             btnQuitar.Text = "Eliminar";
-            // 
-            // btnFinalizar
-            // 
-            btnFinalizar.Location = new Point(213, 574);
-            btnFinalizar.Name = "btnFinalizar";
-            btnFinalizar.Size = new Size(76, 30);
-            btnFinalizar.TabIndex = 7;
-            btnFinalizar.Text = "Guardar";
+            btnQuitar.Click += btnQuitarCompraVenta_Click;
             // 
             // cmbReceiptKind
             // 
             cmbReceiptKind.Items.AddRange(new object[] { "Venta", "Compra" });
-            cmbReceiptKind.Location = new Point(322, 118);
+            cmbReceiptKind.Location = new Point(270, 67);
             cmbReceiptKind.Name = "cmbReceiptKind";
             cmbReceiptKind.Size = new Size(124, 23);
             cmbReceiptKind.TabIndex = 8;
@@ -110,7 +113,7 @@
             // 
             listClientes.FormattingEnabled = true;
             listClientes.ItemHeight = 15;
-            listClientes.Location = new Point(23, 32);
+            listClientes.Location = new Point(23, 49);
             listClientes.Name = "listClientes";
             listClientes.Size = new Size(241, 169);
             listClientes.TabIndex = 9;
@@ -128,15 +131,118 @@
             // lblItemDetails
             // 
             lblItemDetails.AutoSize = true;
-            lblItemDetails.Location = new Point(462, 231);
+            lblItemDetails.Location = new Point(322, 231);
             lblItemDetails.Name = "lblItemDetails";
             lblItemDetails.Size = new Size(91, 15);
             lblItemDetails.TabIndex = 11;
             lblItemDetails.Text = "Detalle de Venta";
             // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Location = new Point(270, 49);
+            label1.Name = "label1";
+            label1.Size = new Size(93, 15);
+            label1.TabIndex = 12;
+            label1.Text = "Tipo de Facturas";
+            // 
+            // txtDetailProductId
+            // 
+            txtDetailProductId.Location = new Point(868, 319);
+            txtDetailProductId.Name = "txtDetailProductId";
+            txtDetailProductId.Size = new Size(100, 23);
+            txtDetailProductId.TabIndex = 13;
+            txtDetailProductId.Leave += txtDetailProductId_Leave;
+            // 
+            // txtDetailCantidad
+            // 
+            txtDetailCantidad.Location = new Point(868, 383);
+            txtDetailCantidad.Name = "txtDetailCantidad";
+            txtDetailCantidad.Size = new Size(100, 23);
+            txtDetailCantidad.TabIndex = 14;
+            txtDetailCantidad.Leave += txtDetailCantidad_Leave;
+            // 
+            // label2
+            // 
+            label2.AutoSize = true;
+            label2.Location = new Point(868, 291);
+            label2.Name = "label2";
+            label2.Size = new Size(85, 15);
+            label2.TabIndex = 18;
+            label2.Text = "Id de Producto";
+            // 
+            // label3
+            // 
+            label3.AutoSize = true;
+            label3.Location = new Point(868, 355);
+            label3.Name = "label3";
+            label3.Size = new Size(55, 15);
+            label3.TabIndex = 19;
+            label3.Text = "Cantidad";
+            // 
+            // label4
+            // 
+            label4.AutoSize = true;
+            label4.Location = new Point(868, 419);
+            label4.Name = "label4";
+            label4.Size = new Size(85, 15);
+            label4.TabIndex = 20;
+            label4.Text = "Precio Unitario";
+            // 
+            // txtDetailPrecio
+            // 
+            txtDetailPrecio.Location = new Point(868, 447);
+            txtDetailPrecio.Name = "txtDetailPrecio";
+            txtDetailPrecio.Size = new Size(100, 23);
+            txtDetailPrecio.TabIndex = 15;
+            txtDetailPrecio.Leave += txtDetailPrecio_Leave;
+            // 
+            // btnDetailsAdd
+            // 
+            btnDetailsAdd.BackColor = Color.YellowGreen;
+            btnDetailsAdd.Location = new Point(868, 485);
+            btnDetailsAdd.Name = "btnDetailsAdd";
+            btnDetailsAdd.Size = new Size(107, 41);
+            btnDetailsAdd.TabIndex = 21;
+            btnDetailsAdd.Text = "Agregar";
+            btnDetailsAdd.UseVisualStyleBackColor = false;
+            btnDetailsAdd.Click += btDetailsAdd_Click;
+            // 
+            // btDetailsDelete
+            // 
+            btDetailsDelete.BackColor = Color.Salmon;
+            btDetailsDelete.Location = new Point(868, 573);
+            btDetailsDelete.Name = "btDetailsDelete";
+            btDetailsDelete.Size = new Size(107, 41);
+            btDetailsDelete.TabIndex = 22;
+            btDetailsDelete.Text = "Borrar";
+            btDetailsDelete.UseVisualStyleBackColor = false;
+            btDetailsDelete.Click += btDetailsDelete_Click;
+            // 
+            // btnDetailsUpdate
+            // 
+            btnDetailsUpdate.BackColor = Color.SandyBrown;
+            btnDetailsUpdate.Location = new Point(868, 529);
+            btnDetailsUpdate.Name = "btnDetailsUpdate";
+            btnDetailsUpdate.Size = new Size(107, 41);
+            btnDetailsUpdate.TabIndex = 23;
+            btnDetailsUpdate.Text = "Actualizar";
+            btnDetailsUpdate.UseVisualStyleBackColor = false;
+            btnDetailsUpdate.Click += btnDetailsUpdate_Click;
+            // 
             // frmVentas
             // 
             ClientSize = new Size(1012, 638);
+            Controls.Add(btnDetailsUpdate);
+            Controls.Add(btDetailsDelete);
+            Controls.Add(btnDetailsAdd);
+            Controls.Add(label4);
+            Controls.Add(label3);
+            Controls.Add(label2);
+            Controls.Add(txtDetailPrecio);
+            Controls.Add(txtDetailCantidad);
+            Controls.Add(txtDetailProductId);
+            Controls.Add(label1);
             Controls.Add(lblItemDetails);
             Controls.Add(lblSaleList);
             Controls.Add(listClientes);
@@ -147,7 +253,6 @@
             Controls.Add(lblTotal);
             Controls.Add(btnAgregar);
             Controls.Add(btnQuitar);
-            Controls.Add(btnFinalizar);
             Name = "frmVentas";
             Text = "Ventas / Compras";
             ((System.ComponentModel.ISupportInitialize)dgvItems).EndInit();
@@ -160,5 +265,15 @@
         private ListBox listClientes;
         private Label lblSaleList;
         private Label lblItemDetails;
+        private Label label1;
+        private TextBox txtDetailProductId;
+        private TextBox txtDetailCantidad;
+        private Label label2;
+        private Label label3;
+        private Label label4;
+        private TextBox txtDetailPrecio;
+        private Button btnDetailsAdd;
+        private Button btDetailsDelete;
+        private Button btnDetailsUpdate;
     }
 }
