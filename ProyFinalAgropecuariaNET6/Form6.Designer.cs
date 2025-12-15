@@ -23,6 +23,8 @@
 
         private void InitializeComponent()
         {
+            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
             dgvInventario = new DataGridView();
             txtProductoId = new TextBox();
             txtCantidad = new TextBox();
@@ -38,17 +40,33 @@
             // dgvInventario
             // 
             dgvInventario.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-            dgvInventario.DefaultCellStyle.Font = new Font("Segoe UI", 10F, FontStyle.Regular);
-            dgvInventario.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
-            dgvInventario.RowTemplate.Height = 35;
+            dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = SystemColors.Control;
+            dataGridViewCellStyle1.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
+            dataGridViewCellStyle1.ForeColor = SystemColors.WindowText;
+            dataGridViewCellStyle1.SelectionBackColor = SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = DataGridViewTriState.True;
+            dgvInventario.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             dgvInventario.ColumnHeadersHeight = 35;
+            dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = SystemColors.Window;
+            dataGridViewCellStyle2.Font = new Font("Segoe UI", 10F);
+            dataGridViewCellStyle2.ForeColor = SystemColors.ControlText;
+            dataGridViewCellStyle2.SelectionBackColor = SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = DataGridViewTriState.False;
+            dgvInventario.DefaultCellStyle = dataGridViewCellStyle2;
             dgvInventario.Location = new Point(12, 12);
             dgvInventario.MultiSelect = false;
             dgvInventario.Name = "dgvInventario";
             dgvInventario.RowHeadersWidth = 51;
+            dgvInventario.RowTemplate.Height = 35;
             dgvInventario.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dgvInventario.Size = new Size(698, 519);
             dgvInventario.TabIndex = 0;
+            dgvInventario.CellClick += dgvInventario_CellClick;
+            dgvInventario.CellContentClick += dgvInventario_CellContentClick;
             // 
             // txtProductoId
             // 

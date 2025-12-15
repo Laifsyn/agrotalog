@@ -239,6 +239,22 @@ namespace proyFinalAgropecuaria
         private void txtStockMinimo_TextChanged(object sender, EventArgs e)
         {
         }
+        private void dgvInventario_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            int rowIndex = e.RowIndex;
+            if (rowIndex >= 0)
+            {
+                this.txtProductoId.Text = dgvInventario.Rows[rowIndex].Cells["ProductoId"].Value.ToString();
+                this.txtCantidad.Text = dgvInventario.Rows[rowIndex].Cells["StockActual"].Value.ToString();
+                this.txtStockMinimo.Text = dgvInventario.Rows[rowIndex].Cells["StockMinimo"].Value.ToString();
+                this.txtProductoId_TextChanged(sender, e);
+            }
+        }
+
+        private void dgvInventario_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+            CargarListaInventario();
+        }
     }
 
     public enum existState
